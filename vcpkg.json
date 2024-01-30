@@ -2,7 +2,7 @@
   "name": "templatepluginng",
   "version-semver": "1.0.0",
   "description": "",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "dependencies": [
     "spdlog",
     "directxtk",
