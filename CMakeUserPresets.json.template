@@ -1,0 +1,22 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "deploy-debug",
+      "inherits": "build-debug",
+      "cacheVariables": {
+        "AUTO_PLUGIN_DEPLOYMENT": "ON",
+        "ZIP_TO_DIST": "OFF"
+      },
+      "environment": {
+        "AUTO_PLUGIN_DEPLOYMENT_DIRS": "C:/Program Files (x86)/Steam/steamapps/common/Skyrim Special Edition/Data"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "deploy",
+      "configurePreset": "deploy-debug"
+    }
+  ]
+}

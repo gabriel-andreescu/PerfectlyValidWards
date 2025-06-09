@@ -1,14 +1,23 @@
 {
-  "name": "templatepluginng",
-  "version-semver": "1.0.0",
-  "description": "",
-  "license": "GPL-3.0",
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "features": {
+    "commonlibsse-ng": {
+      "description": "Dependencies of clib-ng",
+      "dependencies": [
+        "catch2",
+        "fmt",
+        "directxtk",
+        "rapidcsv",
+        "spdlog"
+      ]
+    }
+  },
   "dependencies": [
-    "spdlog",
-    "directxtk",
-    "catch2",
     "xbyak",
-    "rapidcsv"
+    "clib-util"
   ],
-  "builtin-baseline": "7032c5759f823fc8699a5c37d5f7072464ccb9a8"
+  "default-features": [
+    "commonlibsse-ng"
+  ],
+  "builtin-baseline": "ce613c41372b23b1f51333815feb3edd87ef8a8b"
 }
