@@ -1,4 +1,4 @@
-# Template Plugin NG
+# Plugin Template NG
 
 ---
 
@@ -7,8 +7,8 @@
 Open terminal (e.g., PowerShell) and run the following commands:
 
 ```
-git clone --recursive https://github.com/gabriel-andreescu/TemplatePluginNG.git
-cd TemplatePluginNG
+git clone --recursive https://github.com/gabriel-andreescu/PluginTemplateNG.git
+cd PluginTemplateNG
 cmake --preset=build-release
 cmake --build --preset=release
 ```

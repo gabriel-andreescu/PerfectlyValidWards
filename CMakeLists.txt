@@ -5,7 +5,7 @@ set(VCPKG_DISABLE_METRICS ON)
 set(VCPKG_INSTALL_OPTIONS "--no-print-usage")
 
 project(
-        TemplatePluginNG
+        PluginTemplateNG
         VERSION 1.0.0
         LANGUAGES CXX
 )
