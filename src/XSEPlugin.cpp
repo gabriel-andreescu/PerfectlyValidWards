@@ -1,3 +1,5 @@
+#include "EventListener.h"
+#include "Hooks.h"
 #include "Settings.h"
 
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
@@ -22,6 +24,8 @@ void MessageHandler(SKSE::MessagingInterface::Message* message)
         // Called when all ESM/ESL/ESP plugins have loaded and the main menu is active.
         // Safe to access game form data.
     case SKSE::MessagingInterface::kDataLoaded:
+        Hooks::Install();
+        EventListener::Register();
         break;
 
         // ---------- Skyrim Game Events ----------
@@ -73,6 +77,7 @@ SKSEPluginLoad(const SKSE::LoadInterface* a_skse)
         log = std::make_shared<spdlog::logger>("Global", std::make_shared<spdlog::sinks::msvc_sink_mt>());
     } else {
         // Set up file logging.
+        // ReSharper disable once CppLocalVariableMayBeConst
         auto path = SKSE::log::log_directory();
         if (!path) {
             stl::report_and_fail("Failed to find standard logging directory"sv);
@@ -110,6 +115,7 @@ SKSEPluginLoad(const SKSE::LoadInterface* a_skse)
     }
 
     SKSE::Init(a_skse, false);
+    //SKSE::AllocTrampoline(64);
 
     if (!SKSE::GetMessagingInterface()->RegisterListener(MessageHandler)) {
         stl::report_and_fail("Unable to register message listener.");

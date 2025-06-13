@@ -87,13 +87,18 @@ Open PowerShell and run the following command:
 
 ## Credits
 
+Thanks to the entire open source community, it provided a ton of invaluable information during my learning.
+A special thanks to [Doodlum](https://github.com/doodlum), who pointed me in the right direction when I started.
+
+The following projects and repositories were directly used or served as important references:
+
 - [CommonLibSSE NG](https://github.com/alandtse/CommonLibVR/tree/ng)
 - [CLibUtil](https://github.com/powerof3/CLibUtil)
-
-### **Learning resources**
-
 - [skyrim-community-shaders](https://github.com/doodlum/skyrim-community-shaders)
 - [CLibNGPluginTemplate](https://github.com/ThirdEyeSqueegee/CLibNGPluginTemplate)
 - [powerof3's repos](https://github.com/powerof3)
+- [Monitor221hz's repos](https://github.com/Monitor221hz)
+- ThirdEyeSqueegee's repos
+- the xRE SE Discord channel
 
 ---
