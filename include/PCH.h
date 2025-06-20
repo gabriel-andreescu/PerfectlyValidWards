@@ -9,6 +9,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <ClibUtil/simpleINI.hpp>
 #include <chrono>
+#include <numbers>
 #include <shared_mutex>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/msvc_sink.h>
@@ -26,31 +27,6 @@ namespace logger = SKSE::log;
 namespace stl
 {
     using namespace SKSE::stl;
-
-    template <typename T, std::size_t Size = 5>
-    constexpr auto write_thunk_call(REL::Relocation<> a_target) noexcept
-    {
-        T::func = a_target.write_call<Size>(T::Thunk);
-    }
-
-    template <typename T, std::size_t Size = 5>
-    constexpr auto write_thunk_jump(REL::Relocation<> a_target) noexcept
-    {
-        T::func = a_target.write_branch<Size>(T::Thunk);
-    }
-
-    template <typename T>
-    constexpr auto write_vfunc(const REL::VariantID variant_id) noexcept
-    {
-        REL::Relocation vtbl{variant_id};
-        T::func = vtbl.write_vfunc(T::idx, T::Thunk);
-    }
-
-    template <typename TDest, typename TSource>
-    constexpr auto write_vfunc(const std::size_t a_vtableIdx = 0) noexcept
-    {
-        write_vfunc<TSource>(TDest::VTABLE[a_vtableIdx]);
-    }
 
     namespace detail
     {
@@ -86,6 +62,38 @@ namespace stl
 
             return std::pair{std::move(plugin), id};
         }
+
+        [[nodiscard]] inline bool initialize_sound(RE::BSSoundHandle& a_handle, const std::string& a_editorID)
+        {
+            const auto man = RE::BSAudioManager::GetSingleton();
+            man->BuildSoundDataFromEditorID(a_handle, a_editorID.c_str(), 16);
+            return a_handle.IsValid();
+        }
+    }
+
+    template <typename T, std::size_t Size = 5>
+    constexpr auto write_thunk_call(REL::Relocation<> a_target) noexcept
+    {
+        T::func = a_target.write_call<Size>(T::Thunk);
+    }
+
+    template <typename T, std::size_t Size = 5>
+    constexpr auto write_thunk_jump(REL::Relocation<> a_target) noexcept
+    {
+        T::func = a_target.write_branch<Size>(T::Thunk);
+    }
+
+    template <typename T>
+    constexpr auto write_vfunc(const REL::VariantID variant_id) noexcept
+    {
+        REL::Relocation vtbl{variant_id};
+        T::func = vtbl.write_vfunc(T::idx, T::Thunk);
+    }
+
+    template <typename TDest, typename TSource>
+    constexpr auto write_vfunc(const std::size_t a_vtableIdx = 0) noexcept
+    {
+        write_vfunc<TSource>(TDest::VTABLE[a_vtableIdx]);
     }
 
     auto add_thread_task(const std::function<void()>& a_fn, const detail::is_duration auto a_wait_for) noexcept
@@ -119,6 +127,26 @@ namespace stl
         return std::ranges::all_of(
             perks,
             [actor](RE::BGSPerk* perk) { return actor->HasPerk(perk); });
+    }
+
+    inline bool play_sound(const RE::Actor* actor,
+                           const std::string& a_editorID,
+                           const float a_volume = 1.f)
+    {
+        RE::BSSoundHandle handle;
+        handle.soundID = static_cast<uint32_t>(-1);
+        handle.assumeSuccess = false;
+        *reinterpret_cast<uint32_t*>(&handle.state) = 0;
+
+        if (detail::initialize_sound(handle, a_editorID) && handle.SetPosition(actor->GetPosition())) {
+            handle.SetVolume(a_volume);
+            if (actor->Get3D()) {
+                handle.SetObjectToFollow(actor->Get3D());
+            }
+            handle.Play();
+        }
+
+        return handle.IsPlaying();
     }
 }
 
