@@ -7,7 +7,7 @@
 Open terminal (e.g., PowerShell) and run the following commands:
 
 ```
-git clone --recursive https://github.com/gabriel-andreescu/PluginTemplateNG.git
+git clone --recurse-submodules -j8 https://github.com/gabriel-andreescu/PluginTemplateNG.git
 cd PluginTemplateNG
 cmake --preset=build-release
 cmake --build --preset=release
