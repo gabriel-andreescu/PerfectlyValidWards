@@ -14,7 +14,7 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 # Build options
 option(AUTO_PLUGIN_DEPLOYMENT "Copy the build output to env:AUTO_PLUGIN_DEPLOYMENT_DIRS." OFF)
-option(ZIP_TO_DIST "Zip the build output to their own 7z file in .\\dist." ON)
+option(ZIP_TO_DIST "Zip the build output to their own 7z file in .\\dist." OFF)
 option(WAIT_FOR_DEBUGGER "Wait for debugger to attach in debug mode" OFF)
 
 message(STATUS "")
