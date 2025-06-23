@@ -1,6 +1,5 @@
 build/
 dist/
-.idea/
 .vs*/
 CMakeUserPresets.json
 .vscode
