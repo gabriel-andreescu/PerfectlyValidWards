@@ -36,24 +36,6 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "RelWithDebInfo"
       }
-    },
-    {
-      "name": "build-debug",
-      "inherits": [
-        "base"
-      ],
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
-      }
-    },
-    {
-      "name": "build-wait-debugger",
-      "inherits": [
-        "build-debug"
-      ],
-      "cacheVariables": {
-        "WAIT_FOR_DEBUGGER": "ON"
-      }
     }
   ],
   "buildPresets": [
@@ -61,16 +43,6 @@
       "name": "release",
       "configurePreset": "build-release",
       "configuration": "RelWithDebInfo"
-    },
-    {
-      "name": "debug",
-      "configurePreset": "build-debug",
-      "configuration": "Debug"
-    },
-    {
-      "name": "wait-debugger",
-      "configurePreset": "build-wait-debugger",
-      "configuration": "Debug"
     }
   ]
 }

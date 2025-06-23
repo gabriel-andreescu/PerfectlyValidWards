@@ -2,10 +2,13 @@
   "version": 6,
   "configurePresets": [
     {
-      "name": "deploy-debug",
-      "inherits": "build-debug",
+      "name": "build-debug",
+      "inherits": [
+        "base"
+      ],
       "cacheVariables": {
-        "AUTO_PLUGIN_DEPLOYMENT": "ON"
+        "AUTO_PLUGIN_DEPLOYMENT": "ON",
+        "CMAKE_BUILD_TYPE": "Debug"
       },
       "environment": {
         "AUTO_PLUGIN_DEPLOYMENT_DIRS": "C:/Program Files (x86)/Steam/steamapps/common/Skyrim Special Edition/Data"
@@ -14,8 +17,9 @@
   ],
   "buildPresets": [
     {
-      "name": "deploy",
-      "configurePreset": "deploy-debug"
+      "name": "debug",
+      "configurePreset": "build-debug",
+      "configuration": "Debug"
     }
   ]
 }

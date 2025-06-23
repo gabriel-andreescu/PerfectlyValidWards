@@ -23,14 +23,6 @@ cp CMakeUserPresets.json.template CMakeUserPresets.json
 
 - [Steamless](https://github.com/atom0s/Steamless/releases)
 
-#### Option 1:
-
-- set `WAIT_FOR_DEBUGGER` to `ON` in your CMake preset
-- run `skse64_loader.exe`
-- attach debugger to `SkyrimSE.exe`
-
-#### Option 2:
-
 - build [SKSE](https://github.com/ianpatt/skse64) from sources with the Debug config
 - copy the built files and their PDB to the Skyrim folder
 - run `skse64_loader.exe`
@@ -38,13 +30,9 @@ cp CMakeUserPresets.json.template CMakeUserPresets.json
 
 ### **Deployment**
 
-Use the `deploy-debug` preset (see `CMakeUserPresets.json.template`) to automatically copy the plugin to your Skyrim Data directory, if configured.
+Use the `build-debug` preset (see `CMakeUserPresets.json.template`) to automatically copy the plugin to your Skyrim Data directory, if configured.
 
 For deployment to multiple targets split the paths with a `;` (e.g., `C:/path1/data;C:/path2/data`)
-
-### **Packaging**
-
-By default, a 7z archive is outputted in the `dist` folder if using the `build-release` or `build-debug` presets.
 
 ---
 
@@ -67,6 +55,8 @@ Data/SKSE/Plugins/<plugin-name>.ini
     - Add the cmake.exe install path to the `PATH` environment variable
 - [Vcpkg](https://learn.microsoft.com/en-us/vcpkg/get_started/get-started?pivots=shell-powershell#1---set-up-vcpkg)
     - Add a new `VCPKG_ROOT` environment variable pointing to the root folder of vcpkg (e.g., `C:\vcpkg`)
+
+This project is developed using the **non-commercial** version of [CLion](https://www.jetbrains.com/clion/)
 
 ### **Register Visual Studio as a Generator**
 
