@@ -5,7 +5,7 @@ set(VCPKG_DISABLE_METRICS ON)
 set(VCPKG_INSTALL_OPTIONS "--no-print-usage")
 
 project(
-        PluginTemplateNG
+        PerfectlyValidWards
         VERSION 1.0.0
         LANGUAGES CXX
 )
@@ -41,9 +41,11 @@ add_library("${PROJECT_NAME}" SHARED
         ${CMAKE_CURRENT_BINARY_DIR}/cmake/version.rc
         src/PCH.h
         src/Settings.h
+        src/WardManager.h
         src/Hooks.h
         src/EventListener.h
         src/main.cpp
+        src/WardManager.cpp
         src/Hooks.cpp
         src/EventListener.cpp)
 

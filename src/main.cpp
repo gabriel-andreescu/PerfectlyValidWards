@@ -1,14 +1,18 @@
 #include "EventListener.h"
 #include "Hooks.h"
 #include "Settings.h"
+#include "WardManager.h"
 
-constexpr auto kTrampolineSize = 48;
+constexpr auto kTrampolineSize = 128;
 
 void MessageHandler(SKSE::MessagingInterface::Message* a_msg) {
     if (a_msg->type == SKSE::MessagingInterface::kPostLoad) {
         Settings::GetSingleton()->Load();
     }
     if (a_msg->type == SKSE::MessagingInterface::kDataLoaded) {
+        WardManager::PatchCollisionLayers();
+        WardManager::PatchImpactDataSets();
+        WardManager::PatchHitGrunts();
         Hooks::Install();
         EventListener::Register();
     }

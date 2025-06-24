@@ -1,5 +1,8 @@
 #include "EventListener.h"
 
+#include "Settings.h"
+#include "WardManager.h"
+
 void EventListener::Register() {
     auto* listener = GetSingleton();
     auto* eventHolder = RE::ScriptEventSourceHolder::GetSingleton();
@@ -23,14 +26,6 @@ EventListener::Control EventListener::ProcessEvent(
     if (!a_event || !a_event->target || !a_event->cause) {
         return Control::kContinue;
     }
-
-    auto* target = a_event->target->As<RE::Actor>();
-    auto* cause = a_event->cause->As<RE::Actor>();
-    if (!target || !cause) {
-        return Control::kContinue;
-    }
-
-    logger::debug("{} hit {}", cause->GetDisplayFullName(), target->GetDisplayFullName());
 
     return Control::kContinue;
 }
