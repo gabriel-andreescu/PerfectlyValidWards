@@ -6,7 +6,7 @@ set(VCPKG_INSTALL_OPTIONS "--no-print-usage")
 
 project(
         PerfectlyValidWards
-        VERSION 1.0.0
+        VERSION 1.0.1
         LANGUAGES CXX
 )
 

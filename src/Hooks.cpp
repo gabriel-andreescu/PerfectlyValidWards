@@ -44,7 +44,7 @@ namespace Hooks {
         // SSE: Up      p   HitData__Populate_140742850+37C                     call    HitData__Resolve_140743510
         // AE: Up       p   HitData__Populate_1407DAFF0+358                     call    HitData__Resolve_1407DBD20
         stl::write_thunk_call<HitData_Resolve>(
-            REL::Relocation{ RELOCATION_ID(42832, 44001), REL::Relocate(0x37C, 0x358) }
+            REL::Relocation{ RELOCATION_ID(42832, 44001), REL::Relocate(0x37C, 0x358, 0x3CF) }
         );
 
         stl::write_thunk_call<Actor_GetBlockCost>(
@@ -142,7 +142,7 @@ namespace Hooks {
                 // need to investigate if this would benefit other actors
                 WardManager::FlagWardBlock(player);
 
-                if (avOwner && wardDamage) {
+                if (avOwner && wardDamage > 0.f) {
                     const float skill = avOwner->GetActorValue(RE::ActorValue::kRestoration);
                     const float skillScale = std::clamp(1.f - skill / 100.f, 0.1f, 1.f);
                     const float xp = wardDamage * settings->wardBlockXPScale * skillScale;
@@ -152,7 +152,7 @@ namespace Hooks {
                             player,
                             [xp](RE::Actor* a_player) {
                                 // cast is safe because we only pass PlayerCharacter* in
-                                static_cast<RE::PlayerCharacter*>(a_player)
+                                dynamic_cast<RE::PlayerCharacter*>(a_player)
                                         ->AddSkillExperience(RE::ActorValue::kRestoration, xp);
                             }
                         );
