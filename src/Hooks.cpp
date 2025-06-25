@@ -34,6 +34,11 @@ namespace Hooks {
                 }
             );
         }
+
+        bool IsExperienceModLoaded() noexcept {
+            static const bool loaded = GetModuleHandleW(L"Experience.dll") != nullptr;
+            return loaded;
+        }
     }
 
     void Install() {
@@ -53,9 +58,11 @@ namespace Hooks {
 
         // SSE: Up      p   PlayerCharacter__AdvanceSkill_1406A2540+25          call    sub_1406E61D0
         // AE:  Up      p   PlayerCharacter__AddSkillExperience_140736E20+25    call    sub_7FF7F480AE60
-        stl::write_thunk_call<AddSkillExperience>(
-            REL::Relocation{ RELOCATION_ID(39413, 40488), 0x25 }
-        );
+        if (!IsExperienceModLoaded()) {
+            stl::write_thunk_call<AddSkillExperience>(
+                REL::Relocation{ RELOCATION_ID(39413, 40488), 0x25 }
+            );
+        }
     }
 
     // needed for melee attacks to not use metal impact sound
@@ -142,7 +149,7 @@ namespace Hooks {
                 // need to investigate if this would benefit other actors
                 WardManager::FlagWardBlock(player);
 
-                if (avOwner && wardDamage > 0.f) {
+                if (!IsExperienceModLoaded() && avOwner && wardDamage > 0.f) {
                     const float skill = avOwner->GetActorValue(RE::ActorValue::kRestoration);
                     const float skillScale = std::clamp(1.f - skill / 100.f, 0.1f, 1.f);
                     const float xp = wardDamage * settings->wardBlockXPScale * skillScale;
