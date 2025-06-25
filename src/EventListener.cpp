@@ -1,7 +1,6 @@
 #include "EventListener.h"
 
-#include "Settings.h"
-#include "WardManager.h"
+#include "RE.h"
 
 void EventListener::Register() {
     auto* listener = GetSingleton();
@@ -20,12 +19,20 @@ void EventListener::Register() {
 }
 
 EventListener::Control EventListener::ProcessEvent(
-    const RE::TESHitEvent* a_event,
-    [[maybe_unused]] RE::BSTEventSource<RE::TESHitEvent>* a_eventSource
+    const RE::TESMagicWardHitEvent* a_event,
+    [[maybe_unused]] RE::BSTEventSource<RE::TESMagicWardHitEvent>* a_eventSource
 ) {
-    if (!a_event || !a_event->target || !a_event->cause) {
+    if (!a_event || !a_event->defender || !a_event->attacker) {
         return Control::kContinue;
     }
+
+    /*if (a_event->status == RE::TESMagicWardHitEvent::Status::kAbsorbed && a_event->spell) {
+        auto* magicItem = RE::TESForm::LookupByID<RE::MagicItem>(a_event->spell);
+
+        if (magicItem && magicItem->GetSpellType() == RE::MagicSystem::SpellType::kVoicePower) {
+            logger::debug("Ward got hit by a shout");
+        }
+    }*/
 
     return Control::kContinue;
 }
