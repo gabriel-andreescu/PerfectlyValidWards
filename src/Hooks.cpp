@@ -14,31 +14,6 @@ namespace Hooks {
             const auto angle = defender->GetHeadingAngle(attacker->GetPosition(), true);
             return angle <= Settings::GetSingleton()->wardBlockingAngle;
         }
-
-        template<class Fn>
-        void AddActorTaskSafe(RE::Actor* a_actor, Fn&& a_fn, std::chrono::nanoseconds a_delay = 0ns) {
-            const RE::ActorHandle handle = a_actor ? a_actor->GetHandle() : RE::ActorHandle{};
-            stl::add_thread_task(
-                [handle, fn = std::forward<Fn>(a_fn)]() mutable {
-                    if (auto* actor = handle.get().get(); actor) { fn(actor); }
-                },
-                a_delay
-            );
-        }
-
-        void PlayDeflectSound(RE::Actor* defender) {
-            AddActorTaskSafe(
-                defender,
-                [](RE::Actor* a_defender) {
-                    stl::play_sound(a_defender, "MAGWardTestDeflect");
-                }
-            );
-        }
-
-        bool IsExperienceModLoaded() noexcept {
-            static const bool loaded = GetModuleHandleW(L"Experience.dll") != nullptr;
-            return loaded;
-        }
     }
 
     void Install() {
@@ -58,11 +33,9 @@ namespace Hooks {
 
         // SSE: Up      p   PlayerCharacter__AdvanceSkill_1406A2540+25          call    sub_1406E61D0
         // AE:  Up      p   PlayerCharacter__AddSkillExperience_140736E20+25    call    sub_7FF7F480AE60
-        if (!IsExperienceModLoaded()) {
-            stl::write_thunk_call<AddSkillExperience>(
-                REL::Relocation{ RELOCATION_ID(39413, 40488), 0x25 }
-            );
-        }
+        stl::write_thunk_call<AddSkillExperience>(
+            REL::Relocation{ RELOCATION_ID(39413, 40488), 0x25 }
+        );
     }
 
     // needed for melee attacks to not use metal impact sound
@@ -94,26 +67,28 @@ namespace Hooks {
 
         // power attack recoils attacker
         if (isPowerAttack && settings->staggerPowerAttacks) {
-            AddActorTaskSafe(
-                attacker,
-                [](RE::Actor* actor) {
-                    actor->NotifyAnimationGraph("recoilLargeStart");
-                }
+            stl::add_thread_task(
+                [attacker] {
+                    if (attacker) {
+                        attacker->NotifyAnimationGraph("recoilLargeStart");
+                    }
+                },
+                0ns
             );
         }
         // normal swing staggers attacker
         else if (!isPowerAttack && settings->staggerNormalAttacks) {
-            AddActorTaskSafe(
-                attacker,
-                [defHandle = defender->GetHandle(), settings](RE::Actor* actor) {
-                    if (auto* l_defender = defHandle.get().get()) {
-                        const auto heading = actor->GetHeadingAngle(l_defender->GetPosition(), false);
+            stl::add_thread_task(
+                [attacker, defender] {
+                    if (attacker && defender) {
+                        const auto heading = attacker->GetHeadingAngle(defender->GetPosition(), false);
                         const auto dir = heading >= 0.f ? heading / 360.f : (360.f + heading) / 360.f;
-                        actor->SetGraphVariableFloat("staggerDirection", dir);
-                        actor->SetGraphVariableFloat("StaggerMagnitude", settings->staggerMagnitude);
-                        actor->NotifyAnimationGraph("staggerStart");
+                        attacker->SetGraphVariableFloat("staggerDirection", dir);
+                        attacker->SetGraphVariableFloat("StaggerMagnitude", Settings::GetSingleton()->staggerMagnitude);
+                        attacker->NotifyAnimationGraph("staggerStart");
                     }
-                }
+                },
+                0ns
             );
         }
     }
@@ -149,19 +124,19 @@ namespace Hooks {
                 // need to investigate if this would benefit other actors
                 WardManager::FlagWardBlock(player);
 
-                if (!IsExperienceModLoaded() && avOwner && wardDamage > 0.f) {
+                if (avOwner && wardDamage > 0.f) {
                     const float skill = avOwner->GetActorValue(RE::ActorValue::kRestoration);
                     const float skillScale = std::clamp(1.f - skill / 100.f, 0.1f, 1.f);
                     const float xp = wardDamage * settings->wardBlockXPScale * skillScale;
 
                     if (xp > 0.f) {
-                        AddActorTaskSafe(
-                            player,
-                            [xp](RE::Actor* a_player) {
-                                // cast is safe because we only pass PlayerCharacter* in
-                                dynamic_cast<RE::PlayerCharacter*>(a_player)
-                                        ->AddSkillExperience(RE::ActorValue::kRestoration, xp);
-                            }
+                        stl::add_thread_task(
+                            [xp] {
+                                if (auto* pc = RE::PlayerCharacter::GetSingleton(); pc) {
+                                    pc->AddSkillExperience(RE::ActorValue::kRestoration, xp);
+                                }
+                            },
+                            0ns
                         );
                         logger::debug(
                             "Granted {:.2f} Restoration XP (wardDamage: {:.2f}, skillLvl: {:.0f}, scale: {:.2f})",
@@ -174,7 +149,14 @@ namespace Hooks {
                 }
             }
 
-            PlayDeflectSound(defender);
+            stl::add_thread_task(
+                [defender] {
+                    if (defender) {
+                        stl::play_sound(defender, "MAGWardTestDeflect");
+                    }
+                },
+                0ns
+            );
         }
 
         return func(a_this, a_hitData);
