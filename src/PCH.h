@@ -1,30 +1,10 @@
-// ReSharper disable CppUnusedIncludeDirective
 #pragma once
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #define NOGDI
 
 #include <RE/Skyrim.h>
-#include <REX/REX/Singleton.h>
 #include <SKSE/SKSE.h>
-
-#include <CLIBUtil/simpleINI.hpp>
-#include <spdlog/sinks/basic_file_sink.h>
-#include <spdlog/sinks/msvc_sink.h>
-
-#include <algorithm>
-#include <cassert>
-#include <chrono>
-#include <cstdint>
-#include <format>
-#include <functional>
-#include <limits>
-#include <memory>
-#include <ranges>
-#include <string>
-#include <thread>
-#include <type_traits>
-#include <unordered_set>
 
 #define DLLEXPORT __declspec(dllexport)
 
@@ -57,6 +37,31 @@ namespace detail {
         handle.assumeSuccess = false;
         *reinterpret_cast<std::uint32_t*>(&handle.state) = 0;
         return handle;
+    }
+
+    // "Skyrim.esm|0x123"   ->  {"Skyrim.esm", 0x123}
+    [[nodiscard]] inline std::optional<std::pair<std::string, std::uint32_t>> parse_plugin_form(std::string_view line) {
+        const auto bar = line.find('|');
+        if (bar == std::string_view::npos) {
+            return std::nullopt;
+        }
+
+        std::string plugin {line.substr(0, bar)};
+        std::string_view hex = line.substr(bar + 1);
+
+        if (hex.starts_with("0x") || hex.starts_with("0X")) {
+            hex.remove_prefix(2);
+        }
+
+        std::uint32_t id {};
+        const char* first = std::to_address(hex.begin());
+        const char* last = std::to_address(hex.end());
+        const auto [_, ec] = std::from_chars(first, last, id, 16);
+        if (ec != std::errc {}) {
+            return std::nullopt;
+        }
+
+        return std::make_pair(std::move(plugin), id);
     }
 }
 
@@ -102,5 +107,20 @@ inline bool play_sound(const RE::Actor* a_actor, const std::string& a_editorID, 
 
     handle.Play();
     return handle.IsPlaying();
+}
+
+[[nodiscard]] inline bool has_all_required_perks(
+    const RE::Actor* a_actor,
+    std::span<RE::BGSPerk* const> a_perks
+) noexcept {
+    if (a_perks.empty()) {
+        return true;
+    }
+    if (!a_actor) {
+        return false;
+    }
+    return std::ranges::all_of(a_perks, [a_actor](RE::BGSPerk* a_perk) {
+        return a_actor->HasPerk(a_perk);
+    });
 }
 }

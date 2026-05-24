@@ -53,15 +53,32 @@ configure_file(
 )
 
 set(SOURCES
+        src/Effects.cpp
+        src/Effects.h
         src/EventListener.cpp
         src/EventListener.h
+        src/Events.h
+        src/FormCache.cpp
+        src/FormCache.h
         src/Hooks.cpp
         src/Hooks.h
         src/main.cpp
+        src/Mechanics.cpp
+        src/Mechanics.h
+        src/Patches.cpp
+        src/Patches.h
         src/PCH.h
+        src/Physical.cpp
+        src/Physical.h
+        src/Reflection.cpp
+        src/Reflection.h
         src/Settings.h
-        src/WardManager.cpp
-        src/WardManager.h
+        src/Shouts.cpp
+        src/Shouts.h
+        src/Tweaks.cpp
+        src/Tweaks.h
+        src/WardMeter.cpp
+        src/WardMeter.h
         "${CMAKE_CURRENT_BINARY_DIR}/version.rc"
 )
 
