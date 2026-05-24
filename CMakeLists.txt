@@ -65,6 +65,8 @@ set(SOURCES
         src/main.cpp
         src/Mechanics.cpp
         src/Mechanics.h
+        src/Papyrus.cpp
+        src/Papyrus.h
         src/Patches.cpp
         src/Patches.h
         src/PCH.h
@@ -72,6 +74,7 @@ set(SOURCES
         src/Physical.h
         src/Reflection.cpp
         src/Reflection.h
+        src/Settings.cpp
         src/Settings.h
         src/Shouts.cpp
         src/Shouts.h

@@ -1,0 +1,364 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Exit-9B/MCM-Helper/main/docs/config.schema.json",
+  "modName": "PerfectlyValidWards",
+  "displayName": "Perfectly Valid Wards",
+  "minMcmVersion": 13,
+  "pages": [
+    {
+      "pageDisplayName": "General",
+      "content": [
+        {
+          "id": "bShowWardMeter:General",
+          "text": "Show ward meter",
+          "type": "toggle",
+          "help": "Show ward power meter on HUD while casting a ward spell.",
+          "valueOptions": {
+            "sourceType": "ModSettingBool",
+            "defaultValue": true
+          }
+        },
+        {
+          "id": "bPerkGatesPlayerOnly:General",
+          "text": "Player-only perk requirements",
+          "type": "toggle",
+          "help": "If true, perk requirements only apply to player; NPCs get features automatically.",
+          "valueOptions": {
+            "sourceType": "ModSettingBool",
+            "defaultValue": false
+          }
+        }
+      ]
+    },
+    {
+      "pageDisplayName": "Tweaks",
+      "content": [
+        {
+          "id": "bInstantCharge:Tweaks",
+          "text": "Instant ward charge",
+          "type": "toggle",
+          "help": "Wards charge instantly to full power. Ignores fChargeRateMultiplier.",
+          "valueOptions": {
+            "sourceType": "ModSettingBool",
+            "defaultValue": false
+          }
+        },
+        {
+          "id": "fChargeRateMultiplier:Tweaks",
+          "text": "Ward charge speed",
+          "type": "slider",
+          "help": "Ward charge speed multiplier. Only applies when bInstantCharge is false.",
+          "valueOptions": {
+            "sourceType": "ModSettingFloat",
+            "defaultValue": 1.0,
+            "min": 0.01,
+            "max": 10.0,
+            "step": 0.01,
+            "formatString": "{2}"
+          }
+        },
+        {
+          "id": "fMagnitudeMultiplier:Tweaks",
+          "text": "Ward strength",
+          "type": "slider",
+          "help": "Ward strength multiplier (max ward power).",
+          "valueOptions": {
+            "sourceType": "ModSettingFloat",
+            "defaultValue": 1.0,
+            "min": 0.01,
+            "max": 10.0,
+            "step": 0.01,
+            "formatString": "{2}"
+          }
+        },
+        {
+          "id": "fCostMultiplier:Tweaks",
+          "text": "Ward magicka cost",
+          "type": "slider",
+          "help": "Ward magicka cost multiplier.",
+          "valueOptions": {
+            "sourceType": "ModSettingFloat",
+            "defaultValue": 1.0,
+            "min": 0.01,
+            "max": 10.0,
+            "step": 0.01,
+            "formatString": "{2}"
+          }
+        },
+        {
+          "id": "bRestrictToPlayerTeam:Tweaks",
+          "text": "Restrict tweaks to player team",
+          "type": "toggle",
+          "help": "If true, tweaks only apply to player and teammates.",
+          "valueOptions": {
+            "sourceType": "ModSettingBool",
+            "defaultValue": false
+          }
+        }
+      ]
+    },
+    {
+      "pageDisplayName": "Physical",
+      "content": [
+        {
+          "id": "bStaggerNormalAttacks:Physical",
+          "text": "Stagger normal attacks",
+          "type": "toggle",
+          "help": "If true, attackers will stagger when their normal (non-power) melee attack is blocked by a ward.",
+          "valueOptions": {
+            "sourceType": "ModSettingBool",
+            "defaultValue": false
+          }
+        },
+        {
+          "id": "fStaggerMagnitude:Physical",
+          "text": "Stagger magnitude",
+          "type": "slider",
+          "help": "Stagger magnitude applied when a normal attack is blocked by a ward.",
+          "valueOptions": {
+            "sourceType": "ModSettingFloat",
+            "defaultValue": 0.3,
+            "min": 0.1,
+            "max": 1.0,
+            "step": 0.1,
+            "formatString": "{1}"
+          }
+        },
+        {
+          "id": "bStaggerPowerAttacks:Physical",
+          "text": "Stagger power attacks",
+          "type": "toggle",
+          "help": "If true, attackers recoil when their power melee attack is blocked by a ward.",
+          "valueOptions": {
+            "sourceType": "ModSettingBool",
+            "defaultValue": true
+          }
+        },
+        {
+          "id": "fBlockingAngle:Physical",
+          "text": "Blocking angle",
+          "type": "slider",
+          "help": "Blocking cone angle for melee and ranged attacks. Spells use their own hit detection.",
+          "valueOptions": {
+            "sourceType": "ModSettingFloat",
+            "defaultValue": 90.0,
+            "min": 45.0,
+            "max": 180.0,
+            "step": 1.0,
+            "formatString": "{0}"
+          }
+        },
+        {
+          "id": "fPowerDamageMultiplier:Physical",
+          "text": "Physical damage to ward power",
+          "type": "slider",
+          "help": "Multiplier applied to physical damage before subtracting from ward power. Set to 0 to prevent physical hits from draining ward power.",
+          "valueOptions": {
+            "sourceType": "ModSettingFloat",
+            "defaultValue": 1.0,
+            "min": 0.0,
+            "max": 10.0,
+            "step": 0.1,
+            "formatString": "{1}"
+          }
+        },
+        {
+          "id": "fBlockXPScale:Physical",
+          "text": "Restoration XP",
+          "type": "slider",
+          "help": "Multiplier for Restoration XP gained when blocking with a ward.",
+          "valueOptions": {
+            "sourceType": "ModSettingFloat",
+            "defaultValue": 0.25,
+            "min": 0.1,
+            "max": 10.0,
+            "step": 0.1,
+            "formatString": "{1}"
+          }
+        }
+      ]
+    },
+    {
+      "pageDisplayName": "Shouts",
+      "content": [
+        {
+          "id": "iShoutMode:Magic.Shouts",
+          "text": "Ward vs shout behavior",
+          "type": "enum",
+          "help": "Controls the overall ward vs shout behavior. Other shout values act as tuning knobs.",
+          "valueOptions": {
+            "sourceType": "ModSettingInt",
+            "defaultValue": 3,
+            "options": [
+              "Vanilla",
+              "Break wards only",
+              "Break and stagger",
+              "Break and pass through"
+            ],
+            "shortNames": [
+              "Vanilla",
+              "Break",
+              "Stagger",
+              "Pass through"
+            ]
+          }
+        },
+        {
+          "id": "bPlayerImmuneToShoutMechanics:Magic.Shouts",
+          "text": "Player absorbs shouts",
+          "type": "toggle",
+          "help": "If true, player wards behave like vanilla (absorb shouts completely).",
+          "valueOptions": {
+            "sourceType": "ModSettingBool",
+            "defaultValue": false
+          }
+        },
+        {
+          "id": "fShoutDamage:Magic.Shouts",
+          "text": "Shout ward damage",
+          "type": "slider",
+          "help": "Flat ward power damage from shouts. Only used when bShoutInstantBreak is false.",
+          "valueOptions": {
+            "sourceType": "ModSettingFloat",
+            "defaultValue": 40.0,
+            "min": 0.0,
+            "max": 250.0,
+            "step": 1.0,
+            "formatString": "{0}"
+          }
+        },
+        {
+          "id": "bShoutInstantBreak:Magic.Shouts",
+          "text": "Shouts instantly break wards",
+          "type": "toggle",
+          "help": "If true, shouts instantly break wards instead of dealing fixed damage. Ignored in Vanilla mode.",
+          "valueOptions": {
+            "sourceType": "ModSettingBool",
+            "defaultValue": false
+          }
+        },
+        {
+          "id": "fStaggerMagnitudeTowardDefender:Magic.Shouts",
+          "text": "Break stagger magnitude",
+          "type": "slider",
+          "help": "Stagger magnitude applied when the ward breaks from a shout in Break+Stagger mode.",
+          "valueOptions": {
+            "sourceType": "ModSettingFloat",
+            "defaultValue": 0.3,
+            "min": 0.1,
+            "max": 1.0,
+            "step": 0.1,
+            "formatString": "{1}"
+          }
+        }
+      ]
+    },
+    {
+      "pageDisplayName": "Effects",
+      "content": [
+        {
+          "id": "bBlockDiseases:Magic.Effects",
+          "text": "Block diseases",
+          "type": "toggle",
+          "help": "If true, wards can block disease spells when facing the source.",
+          "valueOptions": {
+            "sourceType": "ModSettingBool",
+            "defaultValue": true
+          }
+        },
+        {
+          "id": "bBlockCloaks:Magic.Effects",
+          "text": "Block cloaks",
+          "type": "toggle",
+          "help": "If true, wards can block hostile cloak spell ticks when facing the source.",
+          "valueOptions": {
+            "sourceType": "ModSettingBool",
+            "defaultValue": true
+          }
+        },
+        {
+          "id": "fCloakDamageMultiplier:Magic.Effects",
+          "text": "Cloak ward damage",
+          "type": "slider",
+          "help": "Multiplier applied to cloak effect magnitude when calculating ward power drain. Set to 0 to block cloak ticks without draining ward power.",
+          "valueOptions": {
+            "sourceType": "ModSettingFloat",
+            "defaultValue": 1.0,
+            "min": 0.0,
+            "max": 10.0,
+            "step": 0.1,
+            "formatString": "{1}"
+          }
+        }
+      ]
+    },
+    {
+      "pageDisplayName": "Reflection",
+      "content": [
+        {
+          "id": "bEnableSpellReflection:Magic.Reflection",
+          "text": "Enable spell reflection",
+          "type": "toggle",
+          "help": "If true, wards reflect incoming projectile spells back toward the attacker.",
+          "valueOptions": {
+            "sourceType": "ModSettingBool",
+            "defaultValue": true
+          }
+        },
+        {
+          "id": "bAutoAimReflection:Magic.Reflection",
+          "text": "Aim reflected spells",
+          "type": "toggle",
+          "help": "If true, reflected spells aim at the attacker. If false, spells reflect forward.",
+          "valueOptions": {
+            "sourceType": "ModSettingBool",
+            "defaultValue": true
+          }
+        },
+        {
+          "id": "bReflectionBlameAttacker:Magic.Reflection",
+          "text": "Blame original attacker",
+          "type": "toggle",
+          "help": "If true, the original attacker is blamed for reflected spell damage.",
+          "valueOptions": {
+            "sourceType": "ModSettingBool",
+            "defaultValue": true
+          }
+        },
+        {
+          "id": "fReflectionForwardOffset:Magic.Reflection",
+          "text": "Reflection spawn offset",
+          "type": "slider",
+          "help": "Spawn offset for reflected projectiles.",
+          "valueOptions": {
+            "sourceType": "ModSettingFloat",
+            "defaultValue": 48.0,
+            "min": 16.0,
+            "max": 256.0,
+            "step": 1.0,
+            "formatString": "{0}"
+          }
+        },
+        {
+          "id": "bReflectEvenIfWardBroken:Magic.Reflection",
+          "text": "Reflect on ward break",
+          "type": "toggle",
+          "help": "If true, spells are reflected even when they break the ward.",
+          "valueOptions": {
+            "sourceType": "ModSettingBool",
+            "defaultValue": true
+          }
+        },
+        {
+          "id": "bRestrictReflectionToPlayerTeam:Magic.Reflection",
+          "text": "Restrict reflection to player team",
+          "type": "toggle",
+          "help": "If true, only player and follower wards reflect spells.",
+          "valueOptions": {
+            "sourceType": "ModSettingBool",
+            "defaultValue": false
+          }
+        }
+      ]
+    }
+  ]
+}

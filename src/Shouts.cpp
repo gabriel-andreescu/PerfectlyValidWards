@@ -5,7 +5,12 @@
 
 namespace {
 using Clock = std::chrono::steady_clock;
-std::unordered_map<std::uint64_t, Clock::time_point> g_recentShoutHits;
+using RecentShoutHits = std::unordered_map<std::uint64_t, Clock::time_point>;
+
+[[nodiscard]] RecentShoutHits& GetRecentShoutHits() {
+    static auto* hits = new RecentShoutHits();
+    return *hits;
+}
 
 [[nodiscard]] bool ShouldProcessShout(RE::Actor* a_defender, const RE::Actor* a_attacker, RE::MagicItem* a_spell) {
     if (!Mechanics::ShouldApply(a_defender, a_attacker, Mechanics::Feature::kShout)) {
@@ -167,7 +172,8 @@ void Shouts::ProcessWardHit(RE::Actor* a_defender, RE::Actor* a_attacker, RE::Ma
 
     const auto now = Clock::now();
     const auto key = (static_cast<std::uint64_t>(a_defender->GetFormID()) << 32) | a_spell->GetFormID();
-    if (const auto it = g_recentShoutHits.find(key); it != g_recentShoutHits.end() && (now - it->second) < 150ms) {
+    auto& recentShoutHits = GetRecentShoutHits();
+    if (const auto it = recentShoutHits.find(key); it != recentShoutHits.end() && (now - it->second) < 150ms) {
         logger::debug(
             "Shout hit deduped | defender={} | attacker={} | spell={} <{:08X}>",
             a_defender->GetName(),
@@ -178,14 +184,15 @@ void Shouts::ProcessWardHit(RE::Actor* a_defender, RE::Actor* a_attacker, RE::Ma
         return;
     }
 
-    if (g_recentShoutHits.size() >= 256) {
-        g_recentShoutHits.clear();
+    if (recentShoutHits.size() >= 256) {
+        recentShoutHits.clear();
     }
-    g_recentShoutHits.insert_or_assign(key, now);
+    recentShoutHits.insert_or_assign(key, now);
 
     float currentWardPower = Mechanics::GetCurrentWardPower(a_defender);
     auto* settings = Settings::GetSingleton();
-    const auto damageToApply = settings->shoutInstantBreak ? currentWardPower : settings->shoutDamage;
+    const auto shoutInstantBreak = settings->shoutInstantBreak.load();
+    const auto damageToApply = shoutInstantBreak ? currentWardPower : settings->shoutDamage.load();
 
     logger::debug(
         "Shout hit | defender={} | attacker={} | spell={} <{:08X}> | ward={:.2f} | damage={:.2f} | instantBreak={}",
@@ -195,12 +202,12 @@ void Shouts::ProcessWardHit(RE::Actor* a_defender, RE::Actor* a_attacker, RE::Ma
         a_spell->GetFormID(),
         currentWardPower,
         damageToApply,
-        settings->shoutInstantBreak
+        shoutInstantBreak
     );
 
     const bool wardBroken = CalculateAndApplyWardDamage(a_defender, currentWardPower);
 
-    const bool shouldPassThrough = settings->shoutPassThrough && CanPassThrough(a_spell);
+    const bool shouldPassThrough = settings->shoutPassThrough.load() && CanPassThrough(a_spell);
     if (shouldPassThrough) {
         ApplyPassThrough(a_defender, a_attacker, a_spell);
     } else if (wardBroken) {

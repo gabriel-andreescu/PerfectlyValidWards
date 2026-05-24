@@ -30,7 +30,7 @@ namespace {
         }
 
         const auto* settings = Settings::GetSingleton();
-        if (settings->restrictTweaksToPlayerTeam) {
+        if (settings->restrictTweaksToPlayerTeam.load()) {
             const auto* target = a_effect->GetTargetActor();
             if (!target) {
                 return false;
@@ -101,7 +101,7 @@ struct AccumEffect_Start {
 
         const auto* settings = Settings::GetSingleton();
         const float current = GetTrueMaximum(a_this);
-        SetTrueMaximum(a_this, current * settings->wardMagnitudeMultiplier);
+        SetTrueMaximum(a_this, current * settings->wardMagnitudeMultiplier.load());
     }
 
     static inline REL::Relocation<decltype(thunk)> func;
@@ -118,15 +118,16 @@ struct AccumEffect_Update {
         const auto* settings = Settings::GetSingleton();
         const float trueMax = GetTrueMaximum(a_this);
 
-        if (settings->instantWardCharge) {
+        if (settings->instantWardCharge.load()) {
             a_this->accumulatedMagnitude = trueMax;
             func(a_this, a_delta);
             return;
         }
 
         float delta = a_delta;
-        if (settings->wardChargeRateMultiplier != 1.0f && a_this->holdTimer <= 0.0f) {
-            delta *= settings->wardChargeRateMultiplier;
+        const auto chargeRate = settings->wardChargeRateMultiplier.load();
+        if (chargeRate != 1.0f && a_this->holdTimer <= 0.0f) {
+            delta *= chargeRate;
         }
         func(a_this, delta);
     }
@@ -144,13 +145,13 @@ struct SpellItem_AdjustCost {
         }
 
         const auto* settings = Settings::GetSingleton();
-        if (settings->restrictTweaksToPlayerTeam && a_actor) {
+        if (settings->restrictTweaksToPlayerTeam.load() && a_actor) {
             if (!a_actor->IsPlayerRef() && !a_actor->IsPlayerTeammate()) {
                 return;
             }
         }
 
-        a_cost *= settings->wardCostMultiplier;
+        a_cost *= settings->wardCostMultiplier.load();
     }
 
     static inline REL::Relocation<decltype(thunk)> func;
@@ -162,36 +163,20 @@ void InstallHooks() {
 
     DetectScrambledBugs();
 
-    if (settings->wardMagnitudeMultiplier != 1.0f) {
-        stl::write_vfunc<RE::AccumulatingValueModifierEffect, AccumEffect_Start>();
-        logger::info(
-            "Tweaks: ward magnitude={:.2f}x | playerTeamOnly={}",
-            settings->wardMagnitudeMultiplier,
-            settings->restrictTweaksToPlayerTeam
-        );
-    }
+#ifndef __clang_analyzer__
+    stl::write_vfunc<RE::AccumulatingValueModifierEffect, AccumEffect_Start>();
+    stl::write_vfunc<RE::AccumulatingValueModifierEffect, AccumEffect_Update>();
+    stl::write_vfunc<RE::SpellItem, SpellItem_AdjustCost>();
+#endif
 
-    if (settings->instantWardCharge || settings->wardChargeRateMultiplier != 1.0f) {
-        stl::write_vfunc<RE::AccumulatingValueModifierEffect, AccumEffect_Update>();
-
-        if (settings->instantWardCharge) {
-            logger::info("Tweaks: instant ward charge | playerTeamOnly={}", settings->restrictTweaksToPlayerTeam);
-        } else {
-            logger::info(
-                "Tweaks: ward charge rate={:.2f}x | playerTeamOnly={}",
-                settings->wardChargeRateMultiplier,
-                settings->restrictTweaksToPlayerTeam
-            );
-        }
-    }
-
-    if (settings->wardCostMultiplier != 1.0f) {
-        stl::write_vfunc<RE::SpellItem, SpellItem_AdjustCost>();
-        logger::info(
-            "Tweaks: ward cost={:.2f}x | playerTeamOnly={}",
-            settings->wardCostMultiplier,
-            settings->restrictTweaksToPlayerTeam
-        );
-    }
+    logger::info(
+        "Tweaks: hooks installed | magnitude={:.2f}x | instantCharge={} | chargeRate={:.2f}x | cost={:.2f}x | "
+        "playerTeamOnly={}",
+        settings->wardMagnitudeMultiplier.load(),
+        settings->instantWardCharge.load(),
+        settings->wardChargeRateMultiplier.load(),
+        settings->wardCostMultiplier.load(),
+        settings->restrictTweaksToPlayerTeam.load()
+    );
 }
 }

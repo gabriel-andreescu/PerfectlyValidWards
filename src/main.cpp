@@ -1,6 +1,7 @@
 #include "EventListener.h"
 #include "FormCache.h"
 #include "Hooks.h"
+#include "Papyrus.h"
 #include "Patches.h"
 #include "Settings.h"
 #include "Tweaks.h"
@@ -63,6 +64,7 @@ SKSEPluginLoad(const SKSE::LoadInterface* a_skse) {
 
     SKSE::Init(a_skse, false);
     SKSE::AllocTrampoline(kTrampolineSize);
+    Papyrus::Register();
 
     const auto* msg = SKSE::GetMessagingInterface();
     if (!msg) {

@@ -26,7 +26,10 @@ private:
     mutable std::shared_mutex mx_;
 };
 
-RecentBlocks g_recentBlocks;
+[[nodiscard]] RecentBlocks& GetRecentBlocks() {
+    static auto* blocks = new RecentBlocks();
+    return *blocks;
+}
 }
 
 [[nodiscard]] const char* Mechanics::FeatureName(const Feature a_feature) {
@@ -212,11 +215,11 @@ void Mechanics::ApplyStagger(RE::Actor* a_actor, const RE::NiPoint3& a_sourcePos
 }
 
 void Mechanics::FlagBlock(RE::Actor* a_actor) {
-    g_recentBlocks.flag(a_actor);
+    GetRecentBlocks().flag(a_actor);
 }
 
 [[nodiscard]] bool Mechanics::ConsumeBlock(RE::Actor* a_actor) {
-    return g_recentBlocks.consume(a_actor);
+    return GetRecentBlocks().consume(a_actor);
 }
 
 [[nodiscard]] bool Mechanics::IsDiseaseSpell(RE::MagicItem* a_spell) {

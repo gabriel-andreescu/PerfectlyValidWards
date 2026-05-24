@@ -102,7 +102,9 @@ struct HUDChargeMeterUpdate {
 };
 
 void InstallHook() {
+#ifndef __clang_analyzer__
     stl::write_vfunc<RE::HUDChargeMeter, HUDChargeMeterUpdate>();
+#endif
     logger::info("WardMeter: hook installed");
 }
 }
