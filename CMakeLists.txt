@@ -1,157 +1,220 @@
-cmake_minimum_required(VERSION 3.31)
+cmake_minimum_required(VERSION 3.24...4.2)
 
-set(BUILD_TESTS OFF)
+set(PLUGIN_AUTHOR "GabonZ" CACHE STRING "Plugin author name")
+set(PLUGIN_LICENSE "GPL-3.0-only" CACHE STRING "Plugin license")
+
 set(VCPKG_DISABLE_METRICS ON)
 set(VCPKG_INSTALL_OPTIONS "--no-print-usage")
 
 project(
         PerfectlyValidWards
-        VERSION 1.0.3
+        VERSION 2.0.4
+        DESCRIPTION "Make wards valid again"
         LANGUAGES CXX
 )
 
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+set(OPTIONAL_ASSETS_VERSION 0.1.0)
 
-# Build options
-option(AUTO_PLUGIN_DEPLOYMENT "Copy the build output to env:AUTO_PLUGIN_DEPLOYMENT_DIRS." OFF)
+option(PVW_ENABLE_PRECOMPILED_HEADERS "Enable CMake precompiled headers" ON)
 
-message(STATUS "")
-message(STATUS "==== Plugin Build Configuration ====")
-message(STATUS "  Auto plugin deployment: ${AUTO_PLUGIN_DEPLOYMENT}")
-message(STATUS "====================================")
+find_program(CLANG_TIDY_EXECUTABLE NAMES clang-tidy)
+find_program(RUN_CLANG_TIDY_EXECUTABLE NAMES run-clang-tidy run-clang-tidy.py)
+find_package(Python3 COMPONENTS Interpreter QUIET)
 
-add_compile_definitions(SKYRIM)
-set(CommonLibPath "extern/CommonLibSSE-NG")
-set(CommonLibName "CommonLibSSE")
-
-configure_file(
-        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Plugin.h.in
-        ${CMAKE_CURRENT_BINARY_DIR}/cmake/Plugin.h
-        @ONLY
-)
-
-configure_file(
-        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.rc.in
-        ${CMAKE_CURRENT_BINARY_DIR}/cmake/version.rc
-        @ONLY
-)
-
-add_library("${PROJECT_NAME}" SHARED
-        ${CMAKE_CURRENT_BINARY_DIR}/cmake/Plugin.h
-        ${CMAKE_CURRENT_BINARY_DIR}/cmake/version.rc
-        src/PCH.h
-        src/Settings.h
-        src/WardManager.h
-        src/Hooks.h
-        src/EventListener.h
-        src/main.cpp
-        src/WardManager.cpp
-        src/Hooks.cpp
-        src/EventListener.cpp)
-
-target_compile_features(
-        "${PROJECT_NAME}"
-        PRIVATE
-        cxx_std_23
-)
-
-target_precompile_headers(${PROJECT_NAME} PRIVATE src/PCH.h)
-
-set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
-set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_DEBUG OFF)
-
-if (CMAKE_GENERATOR MATCHES "Visual Studio")
-    add_compile_definitions(_UNICODE)
-
-    target_compile_definitions(${PROJECT_NAME} PRIVATE "$<$<CONFIG:DEBUG>:DEBUG>")
-
-    set(SC_DEBUG_OPTS "/fp:strict;/ZI;/Od;/Gy")
-    set(SC_RELEASE_OPTS "/Zi;/fp:fast;/GL;/Gy-;/Gm-;/Gw;/sdl-;/GS-;/guard:cf-;/O2;/Ob2;/Oi;/Ot;/Oy;/fp:except-")
-
-    target_compile_options(
-            "${PROJECT_NAME}"
-            PRIVATE
-            /MP
-            /W4
-            /WX
-            /permissive-
-            /Zc:alignedNew
-            /Zc:auto
-            /Zc:__cplusplus
-            /Zc:externC
-            /Zc:externConstexpr
-            /Zc:forScope
-            /Zc:hiddenFriend
-            /Zc:implicitNoexcept
-            /Zc:lambda
-            /Zc:noexceptTypes
-            /Zc:preprocessor
-            /Zc:referenceBinding
-            /Zc:rvalueCast
-            /Zc:sizedDealloc
-            /Zc:strictStrings
-            /Zc:ternary
-            /Zc:threadSafeInit
-            /Zc:trigraphs
-            /Zc:wchar_t
-            /wd4200 # nonstandard extension used : zero-sized array in struct/union
-    )
-
-    target_compile_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:DEBUG>:${SC_DEBUG_OPTS}>")
-    target_compile_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:RELEASE>:${SC_RELEASE_OPTS}>")
-
-    target_link_options(
-            ${PROJECT_NAME}
-            PRIVATE
-            /WX
-            "$<$<CONFIG:DEBUG>:/INCREMENTAL;/OPT:NOREF;/OPT:NOICF>"
-            "$<$<CONFIG:RELEASE>:/LTCG;/INCREMENTAL:NO;/OPT:REF;/OPT:ICF;/DEBUG:FULL>"
-    )
+if (PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
+    message(FATAL_ERROR "In-source builds not allowed. Please make a build directory and run CMake from there.")
 endif ()
 
-add_subdirectory(${CommonLibPath} ${CommonLibName} EXCLUDE_FROM_ALL)
+if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    set(CMAKE_CXX_EXTENSIONS OFF)
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+endif ()
 
-find_package(spdlog CONFIG REQUIRED)
+include(CheckIPOSupported)
+check_ipo_supported(RESULT SUPPORTS_IPO OUTPUT IPO_OUTPUT)
+if (SUPPORTS_IPO)
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE ON)
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELWITHDEBINFO ON)
+endif ()
+
+set(DEPLOY_DIR "" CACHE PATH "Deployment directory for base mod assets")
+set(DEPLOY_DIR_OPTIONAL "" CACHE PATH "Deployment directory for optional mod assets")
+set(ASSET_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Skyrim/Data")
+
+add_subdirectory(extern/CLibUtil)
+add_subdirectory(extern/CommonLibSSE-NG)
+
+include(extern/CommonLibSSE-NG/cmake/CommonLibSSE.cmake)
+
+configure_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.rc.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/version.rc"
+        @ONLY
+)
+
+set(SOURCES
+        src/EventListener.cpp
+        src/EventListener.h
+        src/Hooks.cpp
+        src/Hooks.h
+        src/main.cpp
+        src/PCH.h
+        src/Settings.h
+        src/WardManager.cpp
+        src/WardManager.h
+        "${CMAKE_CURRENT_BINARY_DIR}/version.rc"
+)
+
+add_commonlibsse_plugin(
+        ${PROJECT_NAME}
+        SOURCES ${SOURCES}
+        AUTHOR "${PLUGIN_AUTHOR}"
+)
+
+target_compile_features(
+        ${PROJECT_NAME}
+        PUBLIC
+        cxx_std_23
+)
 
 target_include_directories(
         ${PROJECT_NAME}
         PRIVATE
-        ${CMAKE_CURRENT_BINARY_DIR}/cmake
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        "${CMAKE_CURRENT_SOURCE_DIR}/src"
+)
+
+set_target_properties(CLibUtil PROPERTIES
+        INTERFACE_SYSTEM_INCLUDE_DIRECTORIES $<TARGET_PROPERTY:CLibUtil,INTERFACE_INCLUDE_DIRECTORIES>
 )
 
 target_link_libraries(
         ${PROJECT_NAME}
         PUBLIC
         CommonLibSSE::CommonLibSSE
+        CLibUtil::CLibUtil
 )
 
-# Find dependencies
-find_package(xbyak CONFIG REQUIRED)
+if (PVW_ENABLE_PRECOMPILED_HEADERS)
+    target_precompile_headers(
+            ${PROJECT_NAME}
+            PRIVATE
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/PCH.h"
+    )
+else ()
+    target_compile_options(
+            ${PROJECT_NAME}
+            PRIVATE
+            $<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/FI${CMAKE_CURRENT_SOURCE_DIR}/src/PCH.h>
+    )
+endif ()
 
-target_link_libraries(
-        ${PROJECT_NAME}
-        PRIVATE
-        xbyak::xbyak
+if (MSVC)
+    target_compile_options(
+            ${PROJECT_NAME}
+            PRIVATE
+            /EHsc
+            /W4
+            /WX
+            /utf-8
+            /permissive-
+            $<$<CONFIG:RelWithDebInfo>:/Ox>
+    )
+
+    target_link_options(
+            ${PROJECT_NAME}
+            PRIVATE
+            $<$<CONFIG:Debug>:/DEBUG>
+            $<$<CONFIG:Release>:/DEBUG>
+            $<$<CONFIG:RelWithDebInfo>:/DEBUG>
+            $<$<CONFIG:RelWithDebInfo>:/OPT:REF>
+            $<$<CONFIG:RelWithDebInfo>:/OPT:ICF>
+            $<$<CONFIG:RelWithDebInfo>:/INCREMENTAL:NO>
+    )
+endif ()
+
+add_custom_command(
+        TARGET ${PROJECT_NAME}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E rm -rf "${CMAKE_CURRENT_BINARY_DIR}/.cache"
+        VERBATIM
 )
 
-# Handle deployment
-if (AUTO_PLUGIN_DEPLOYMENT)
-    if (NOT DEFINED ENV{AUTO_PLUGIN_DEPLOYMENT_DIRS})
-        message(WARNING "When using AUTO_PLUGIN_DEPLOYMENT, set env var 'AUTO_PLUGIN_DEPLOYMENT_DIRS'")
-    else ()
-        string(REPLACE ";" ";" DEPLOY_TARGETS "$ENV{AUTO_PLUGIN_DEPLOYMENT_DIRS}")
-        foreach (DEPLOY_TARGET ${DEPLOY_TARGETS})
-            if (EXISTS "${DEPLOY_TARGET}")
-                add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                        COMMAND ${CMAKE_COMMAND} -E echo "Deploying to ${DEPLOY_TARGET}"
-                        COMMAND ${CMAKE_COMMAND} -E make_directory "${DEPLOY_TARGET}/SKSE/Plugins"
-                        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> "${DEPLOY_TARGET}/SKSE/Plugins/"
-                        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_PDB_FILE:${PROJECT_NAME}> "${DEPLOY_TARGET}/SKSE/Plugins/"
-                )
-            else ()
-                message(WARNING "Deployment target '${DEPLOY_TARGET}' does not exist. Skipping.")
-            endif ()
-        endforeach ()
-    endif ()
+if (DEPLOY_DIR)
+    foreach (deploy_dir IN LISTS DEPLOY_DIR)
+        set(PLUGIN_DIR "${deploy_dir}/SKSE/Plugins")
+
+        add_custom_command(
+                TARGET ${PROJECT_NAME}
+                POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E echo "Deploying to: ${PLUGIN_DIR}"
+                COMMAND ${CMAKE_COMMAND} -E make_directory "${PLUGIN_DIR}"
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE:${PROJECT_NAME}>" "${PLUGIN_DIR}"
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_PDB_FILE:${PROJECT_NAME}>" "${PLUGIN_DIR}"
+                VERBATIM
+        )
+    endforeach ()
+
+    add_custom_command(
+            TARGET ${PROJECT_NAME}
+            POST_BUILD
+            COMMAND "${CMAKE_COMMAND}"
+            "-DASSET_SOURCE_DIR=${ASSET_SOURCE_DIR}"
+            "-DDEPLOY_DIR=${DEPLOY_DIR}"
+            "-DDEPLOY_DIR_OPTIONAL=${DEPLOY_DIR_OPTIONAL}"
+            -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/deploy_assets.cmake"
+            VERBATIM
+    )
+endif ()
+
+set(DIST_OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dist" CACHE PATH "Directory where release ZIP files are written")
+
+add_custom_target(
+        ${PROJECT_NAME}_dist
+        COMMAND "${CMAKE_COMMAND}"
+        "-DMOD_NAME=${PROJECT_NAME}"
+        "-DMOD_VERSION=${PROJECT_VERSION}"
+        "-DOPTIONAL_ASSETS_VERSION=${OPTIONAL_ASSETS_VERSION}"
+        "-DPLUGIN_DLL=$<TARGET_FILE:${PROJECT_NAME}>"
+        "-DPLUGIN_PDB=$<TARGET_PDB_FILE:${PROJECT_NAME}>"
+        "-DASSET_SOURCE_DIR=${ASSET_SOURCE_DIR}"
+        "-DOUTPUT_DIR=${DIST_OUTPUT_DIR}"
+        "-DWORK_DIR=${CMAKE_CURRENT_BINARY_DIR}/dist/$<CONFIG>"
+        -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/package_skse_mod.cmake"
+        DEPENDS ${PROJECT_NAME}
+        COMMENT "Creating ${PROJECT_NAME} distribution archives"
+        VERBATIM
+)
+
+if (PVW_ENABLE_PRECOMPILED_HEADERS)
+    add_custom_target(
+            ${PROJECT_NAME}_clang_tidy
+            COMMAND "${CMAKE_COMMAND}" -E echo "clang-tidy is disabled in this PCH-enabled build tree."
+            COMMAND "${CMAKE_COMMAND}" -E echo "Use: cmake --preset ninja-lint"
+            COMMAND "${CMAKE_COMMAND}" -E echo "Then: cmake --build --preset clang-tidy"
+            COMMAND "${CMAKE_COMMAND}" -E false
+            COMMENT "clang-tidy requires the ninja-lint preset"
+            VERBATIM
+    )
+elseif (CLANG_TIDY_EXECUTABLE)
+    add_custom_target(
+            ${PROJECT_NAME}_clang_tidy
+            COMMAND "${CMAKE_COMMAND}"
+            "-DCLANG_TIDY_EXECUTABLE=${CLANG_TIDY_EXECUTABLE}"
+            "-DRUN_CLANG_TIDY_EXECUTABLE=${RUN_CLANG_TIDY_EXECUTABLE}"
+            "-DPython3_EXECUTABLE=${Python3_EXECUTABLE}"
+            "-DCLANG_TIDY_JOBS=8"
+            "-DCOMPILE_COMMANDS_FILE=${CMAKE_BINARY_DIR}/compile_commands.json"
+            "-DBUILD_DIR=${CMAKE_BINARY_DIR}"
+            "-DSOURCE_ROOT=${CMAKE_CURRENT_SOURCE_DIR}/src"
+            -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/run_clang_tidy.cmake"
+            COMMENT "Running clang-tidy on ${PROJECT_NAME} source files"
+            VERBATIM
+    )
+else ()
+    add_custom_target(
+            ${PROJECT_NAME}_clang_tidy
+            COMMAND "${CMAKE_COMMAND}" -E false
+            COMMENT "clang-tidy was not found"
+            VERBATIM
+    )
 endif ()

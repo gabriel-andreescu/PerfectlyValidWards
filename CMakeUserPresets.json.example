@@ -1,0 +1,25 @@
+{
+  "$schema": "https://cmake.org/cmake/help/v4.2/_downloads/3e2d73bff478d88a7de0de736ba5e361/schema.json",
+  "version": 8,
+  "configurePresets": [
+    {
+      "name": "user-default",
+      "inherits": "default",
+      "cacheVariables": {
+        "DEPLOY_DIR": "C:\\Games\\Steam Library\\steamapps\\common\\Skyrim Special Edition\\Data;C:\\MO2\\mods\\MyMod",
+        "DEPLOY_DIR_OPTIONAL": "C:\\MO2\\mods\\MyMod - MCM Addon"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "debug",
+      "configurePreset": "user-default"
+    },
+    {
+      "name": "release",
+      "configurePreset": "user-default",
+      "configuration": "RelWithDebInfo"
+    }
+  ]
+}

@@ -4,23 +4,23 @@
 using namespace IDs;
 
 namespace {
-    void CopyFirstConditionFrom(RE::TESTopicInfo* sourceInfo, RE::TESTopicInfo* targetInfo) {
-        if (!sourceInfo || !targetInfo || !sourceInfo->objConditions.head) {
-            return;
-        }
-
-        auto*& targetHead = targetInfo->objConditions.head;
-        if (!targetHead) {
-            targetHead = sourceInfo->objConditions.head;
-            return;
-        }
-
-        auto* current = targetHead;
-        while (current->next) {
-            current = current->next;
-        }
-        current->next = sourceInfo->objConditions.head;
+void CopyFirstConditionFrom(RE::TESTopicInfo* sourceInfo, RE::TESTopicInfo* targetInfo) {
+    if (!sourceInfo || !targetInfo || !sourceInfo->objConditions.head) {
+        return;
     }
+
+    auto*& targetHead = targetInfo->objConditions.head;
+    if (!targetHead) {
+        targetHead = sourceInfo->objConditions.head;
+        return;
+    }
+
+    auto* current = targetHead;
+    while (current->next) {
+        current = current->next;
+    }
+    current->next = sourceInfo->objConditions.head;
+}
 }
 
 [[nodiscard]] float WardManager::GetCurrentWardPower(RE::Actor* a_actor) {
@@ -64,8 +64,7 @@ namespace {
         case RE::WeaponTypes::kHandToHandMelee: { // unarmed
             estimatedWardDamage = avAttacker->GetActorValue(RE::ActorValue::kUnarmedDamage)
                                   * Settings::GetSingleton()->wardPowerDamageMultiplier;
-        }
-        break;
+        } break;
 
         case RE::WeaponTypes::kBow:
         case RE::WeaponTypes::kCrossbow: { // ranged
@@ -75,35 +74,30 @@ namespace {
             attackerSkillLevel = avAttacker->GetActorValue(RE::ActorValue::kArchery);
             avMod += avAttacker->GetActorValue(RE::ActorValue::kMarksmanModifier) / 100.f;
             avPowerMod += avAttacker->GetActorValue(RE::ActorValue::kMarksmanPowerModifier) / 100.f;
-        }
-        break;
+        } break;
 
         case RE::WeaponTypes::kTwoHandSword:
-        case RE::WeaponTypes::kTwoHandAxe: { // two‑hand
+        case RE::WeaponTypes::kTwoHandAxe:   { // two‑hand
             attackerSkillLevel = avAttacker->GetActorValue(RE::ActorValue::kTwoHanded);
             avMod += avAttacker->GetActorValue(RE::ActorValue::kTwoHandedModifier);
             avPowerMod += avAttacker->GetActorValue(RE::ActorValue::kTwoHandedPowerModifier);
-        }
-        break;
+        } break;
 
         default: { // one‑hand
             attackerSkillLevel = avAttacker->GetActorValue(RE::ActorValue::kOneHanded);
             avMod += avAttacker->GetActorValue(RE::ActorValue::kOneHandedModifier);
             avPowerMod += avAttacker->GetActorValue(RE::ActorValue::kOneHandedPowerModifier);
-        }
-        break;
+        } break;
     }
 
     if (a_weapon->GetWeaponType() != RE::WeaponTypes::kHandToHandMelee) {
-        const float skillDamageMult =
-                minSkillMult + (maxSkillMult - minSkillMult) * attackerSkillLevel / 100.f;
+        const float skillDamageMult = minSkillMult + (maxSkillMult - minSkillMult) * attackerSkillLevel / 100.f;
 
-        estimatedWardDamage =
-                weaponDamage *
-                Settings::GetSingleton()->wardPowerDamageMultiplier *
-                skillDamageMult *
-                avMod *
-                avPowerMod;
+        estimatedWardDamage = weaponDamage
+                              * Settings::GetSingleton()->wardPowerDamageMultiplier
+                              * skillDamageMult
+                              * avMod
+                              * avPowerMod;
     }
 
     if (a_powerAttack) {
@@ -118,22 +112,14 @@ void WardManager::DamageWardPower(RE::Actor* a_actor, float a_damage) {
         const auto before = av->GetActorValue(RE::ActorValue::kWardPower);
         auto dmg = std::min(a_damage, before);
 
-        av->RestoreActorValue(
-            RE::ACTOR_VALUE_MODIFIER::kDamage,
-            RE::ActorValue::kWardPower,
-            -dmg
-        );
+        av->DamageActorValue(RE::ActorValue::kWardPower, dmg);
 
-        logger::debug(
-            "Damaging Ward Power: {:.2f} → {:.2f}",
-            before,
-            av->GetActorValue(RE::ActorValue::kWardPower)
-        );
+        logger::debug("Damaging Ward Power: {:.2f} → {:.2f}", before, av->GetActorValue(RE::ActorValue::kWardPower));
     }
 }
 
 void WardManager::PatchCollisionLayers() {
-    const auto data = RE::TESDataHandler::GetSingleton();
+    auto* const data = RE::TESDataHandler::GetSingleton();
     auto* weapon = data->LookupForm<RE::BGSCollisionLayer>(WeaponCol, Settings::skyrimESM);
     auto* projectile = data->LookupForm<RE::BGSCollisionLayer>(ProjectileCol, Settings::skyrimESM);
     auto* ward = data->LookupForm<RE::BGSCollisionLayer>(WardCol, Settings::skyrimESM);
@@ -157,20 +143,20 @@ void WardManager::PatchCollisionLayers() {
 }
 
 void WardManager::PatchImpactDataSets() {
-    const auto data = RE::TESDataHandler::GetSingleton();
+    auto* const data = RE::TESDataHandler::GetSingleton();
     auto* wardMaterial = data->LookupForm<RE::BGSMaterialType>(WardMaterial, Settings::skyrimESM);
     auto* arrowImpactDataSet = data->LookupForm<RE::BGSImpactDataSet>(ArrowImpactSet, Settings::skyrimESM);
     auto* arrowVsWardImpact = data->LookupForm<RE::BGSImpactData>(ArrowVsWardImpact, Settings::pluginName);
 
     if (wardMaterial && arrowImpactDataSet && arrowVsWardImpact) {
-        arrowImpactDataSet->impactMap.insert({ wardMaterial, arrowVsWardImpact });
+        arrowImpactDataSet->impactMap.insert({wardMaterial, arrowVsWardImpact});
     }
 }
 
 void WardManager::PatchHitGrunts() {
-    const auto data = RE::TESDataHandler::GetSingleton();
+    auto* const data = RE::TESDataHandler::GetSingleton();
     auto* gruntPlaceholder = data->LookupForm<RE::TESTopicInfo>(GruntPlaceholder, Settings::pluginName);
-    for (auto id: Grunts) {
+    for (auto id : Grunts) {
         if (auto* grunt = data->LookupForm<RE::TESTopicInfo>(id, Settings::skyrimESM)) {
             CopyFirstConditionFrom(gruntPlaceholder, grunt);
         }
@@ -184,5 +170,3 @@ void WardManager::FlagWardBlock(RE::Actor* a_actor) {
 [[nodiscard]] bool WardManager::ConsumeWardBlock(RE::Actor* a_actor) {
     return g_wardBlocks.consume(a_actor);
 }
-
-

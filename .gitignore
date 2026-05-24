@@ -1,5 +1,73 @@
+# xmake
+.xmake/
+xmake-requires.lock
+
+# build outputs
 build/
 dist/
-.vs*/
+.cache/
+
+# CMake
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
 CMakeUserPresets.json
-.vscode
+.ninja_deps
+.ninja_log
+cmake-build-*/
+
+# C++
+*.d
+*.slo
+*.lo
+*.o
+*.obj
+*.gch
+*.pch
+*.ilk
+*.pdb
+*.so
+*.dylib
+*.dll
+*.mod
+*.smod
+*.lai
+*.la
+*.a
+*.lib
+*.exe
+*.out
+*.app
+*.dwo
+
+# CLion
+.idea/
+cmake-build-*/
+
+# IDE/local
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+*.user
+*.suo
+*.rsuser
+*.env
+
+# Local repo scratch
+debug/
+
+# Windows
+Thumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/

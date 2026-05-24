@@ -18,14 +18,6 @@ void MessageHandler(SKSE::MessagingInterface::Message* a_msg) {
     }
 };
 
-SKSEPluginInfo(
-    .Version = Plugin::VERSION,
-    .Name = Plugin::NAME.data(),
-    .Author = "GabonZ",
-    .StructCompatibility = SKSE::StructCompatibility::Independent,
-    .RuntimeCompatibility = SKSE::VersionIndependence::AddressLibrary
-);
-
 SKSEPluginLoad(const SKSE::LoadInterface* a_skse) {
     std::shared_ptr<spdlog::sinks::sink> sink;
     if (IsDebuggerPresent()) {
@@ -35,7 +27,9 @@ SKSEPluginLoad(const SKSE::LoadInterface* a_skse) {
         if (!path) {
             stl::report_and_fail("Failed to find standard logging directory"sv);
         }
-        *path /= std::format("{}.log", Plugin::NAME);
+
+        const auto* plugin = SKSE::PluginDeclaration::GetSingleton();
+        *path /= std::format("{}.log", plugin->GetName());
         sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(path->string(), true);
     }
 
@@ -54,12 +48,13 @@ SKSEPluginLoad(const SKSE::LoadInterface* a_skse) {
     SKSE::Init(a_skse, false);
     SKSE::AllocTrampoline(kTrampolineSize);
 
-    auto* msg = SKSE::GetMessagingInterface();
+    const auto* msg = SKSE::GetMessagingInterface();
     if (!msg) {
         logger::critical("Failed to obtain Messaging Interface");
         return false;
     }
 
     msg->RegisterListener(MessageHandler);
+    logger::info("PerfectlyValidWards loaded");
     return true;
 }

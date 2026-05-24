@@ -1,48 +1,52 @@
 {
-  "version": 6,
+  "$schema": "https://cmake.org/cmake/help/v4.2/_downloads/3e2d73bff478d88a7de0de736ba5e361/schema.json",
+  "version": 8,
   "cmakeMinimumRequired": {
     "major": 3,
-    "minor": 31
+    "minor": 24,
+    "patch": 0
   },
   "configurePresets": [
     {
-      "name": "base",
-      "hidden": true,
-      "architecture": "x64",
-      "generator": "Visual Studio 17 2022",
+      "name": "default",
+      "generator": "Ninja Multi-Config",
+      "binaryDir": "${sourceDir}/build",
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
+      "toolset": {
+        "value": "host=x64",
+        "strategy": "external"
+      },
       "cacheVariables": {
         "BUILD_TESTS": "OFF",
-        "SKSE_SUPPORT_XBYAK": "ON",
-        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL",
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "VCPKG_OVERLAY_PORTS": "${sourceDir}/cmake/ports/",
-        "VCPKG_TARGET_TRIPLET": "x64-windows-static-md",
-        "CMAKE_CXX_FLAGS": "/EHsc /MP /W4 /WX $penv{CXXFLAGS}"
-      },
-      "vendor": {
-        "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "intelliSenseMode": "windows-msvc-x64",
-          "enableMicrosoftCodeAnalysis": true,
-          "enableClangTidyCodeAnalysis": true
-        }
-      },
-      "binaryDir": "${sourceDir}/build/${presetName}"
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static-md"
+      }
     },
     {
-      "name": "build-release",
-      "inherits": [
-        "base"
-      ],
+      "name": "ninja-lint",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/lint",
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+        "BUILD_TESTS": "OFF",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_CXX_SCAN_FOR_MODULES": "OFF",
+        "PVW_ENABLE_PRECOMPILED_HEADERS": "OFF",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static-md"
       }
     }
   ],
   "buildPresets": [
     {
-      "name": "release",
-      "configurePreset": "build-release",
-      "configuration": "RelWithDebInfo"
+      "name": "clang-tidy",
+      "configurePreset": "ninja-lint",
+      "targets": [
+        "PerfectlyValidWards_clang_tidy"
+      ]
     }
   ]
 }

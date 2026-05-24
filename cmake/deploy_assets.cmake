@@ -1,0 +1,31 @@
+if (NOT DEFINED ASSET_SOURCE_DIR OR ASSET_SOURCE_DIR STREQUAL "")
+    message(FATAL_ERROR "ASSET_SOURCE_DIR is required")
+endif ()
+
+if (NOT DEFINED DEPLOY_DIR OR DEPLOY_DIR STREQUAL "")
+    message(FATAL_ERROR "DEPLOY_DIR is required")
+endif ()
+
+if (NOT EXISTS "${ASSET_SOURCE_DIR}")
+    message(STATUS "Skipping asset deploy because ${ASSET_SOURCE_DIR} does not exist")
+    return()
+endif ()
+
+include("${CMAKE_CURRENT_LIST_DIR}/copy_skyrim_assets.cmake")
+
+foreach (deploy_dir IN LISTS DEPLOY_DIR)
+    message(STATUS "Deploying assets to: ${deploy_dir}")
+    copy_base_skyrim_assets("${ASSET_SOURCE_DIR}" "${deploy_dir}")
+endforeach ()
+
+set(optional_asset_dir "${ASSET_SOURCE_DIR}/optional")
+if (EXISTS "${optional_asset_dir}")
+    if (DEFINED DEPLOY_DIR_OPTIONAL AND NOT DEPLOY_DIR_OPTIONAL STREQUAL "")
+        foreach (deploy_dir_optional IN LISTS DEPLOY_DIR_OPTIONAL)
+            message(STATUS "Deploying optional assets to: ${deploy_dir_optional}")
+            copy_optional_skyrim_assets("${ASSET_SOURCE_DIR}" "${deploy_dir_optional}" optional_assets_copied)
+        endforeach ()
+    else ()
+        message(STATUS "Skipping optional asset deploy because DEPLOY_DIR_OPTIONAL is unset")
+    endif ()
+endif ()

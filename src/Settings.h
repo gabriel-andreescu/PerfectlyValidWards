@@ -5,12 +5,12 @@ public:
     void Load() {
         using namespace clib_util::ini;
 
-        const auto path = std::format("Data/SKSE/Plugins/{}.ini", Plugin::NAME);
+        constexpr auto path = "Data/SKSE/Plugins/PerfectlyValidWards.ini";
 
         CSimpleIniA ini;
         ini.SetUnicode();
 
-        ini.LoadFile(path.c_str());
+        ini.LoadFile(path);
 
         get_value(
             ini,
@@ -64,17 +64,17 @@ public:
         );
         wardBlockXPScale = std::abs(std::clamp(wardBlockXPScale, 0.1f, 10.f));
 
-        (void) ini.SaveFile(path.c_str());
+        (void)ini.SaveFile(path);
     }
 
     // members
-    static constexpr auto pluginName{ "PerfectlyValidWards.esp" };
-    static constexpr auto skyrimESM{ "Skyrim.esm" };
+    static constexpr auto pluginName {"PerfectlyValidWards.esp"};
+    static constexpr auto skyrimESM {"Skyrim.esm"};
 
-    bool staggerNormalAttacks{ false };
-    float staggerMagnitude{ 0.3f };
-    bool staggerPowerAttacks{ true };
-    float wardBlockingAngle{ 90.f };
-    float wardPowerDamageMultiplier{ 1.f };
-    float wardBlockXPScale{ 0.25f };
+    bool staggerNormalAttacks {false};
+    float staggerMagnitude {0.3f};
+    bool staggerPowerAttacks {true};
+    float wardBlockingAngle {90.f};
+    float wardPowerDamageMultiplier {1.f};
+    float wardBlockXPScale {0.25f};
 };
