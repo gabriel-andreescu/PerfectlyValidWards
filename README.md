@@ -1,4 +1,6 @@
-# Plugin Template NG
+# Perfectly Valid Wards
+
+Make wards valid again.
 
 ---
 
@@ -7,16 +9,16 @@
 Open terminal (e.g., PowerShell) and run the following commands:
 
 ```
-git clone --recurse-submodules -j8 https://github.com/gabriel-andreescu/PluginTemplateNG.git
-cd PluginTemplateNG
-cmake --preset=build-release
-cmake --build --preset=release
+git clone --recurse-submodules -j8 https://github.com/gabriel-andreescu/PerfectlyValidWards.git
+cd PerfectlyValidWards
+cmake --preset default
+cmake --build build --config Release
 ```
 
 Optionally:
 
 ```
-cp CMakeUserPresets.json.template CMakeUserPresets.json
+cp CMakeUserPresets.json.example CMakeUserPresets.json
 ```
 
 ### **Debugging**
@@ -30,19 +32,17 @@ cp CMakeUserPresets.json.template CMakeUserPresets.json
 
 ### **Deployment**
 
-Use the `build-debug` preset (see `CMakeUserPresets.json.template`) to automatically copy the plugin to your Skyrim Data directory, if configured.
+Use the user preset (see `CMakeUserPresets.json.example`) to automatically copy the plugin to your Skyrim Data
+directory, if configured.
+
+```
+cmake --preset user-default
+cmake --build --preset release
+```
 
 For deployment to multiple targets split the paths with a `;` (e.g., `C:/path1/data;C:/path2/data`)
-
----
-
-### **INI Settings**
-
-On first run, the plugin creates a config file at:
-
-```
-Data/SKSE/Plugins/<plugin-name>.ini
-```
+Set `DEPLOY_DIR_OPTIONAL` to deploy the optional MCM addon to a separate MO2 mod, such as
+`C:/MO2/mods/PerfectlyValidWards - MCM Addon`.
 
 ---
 

@@ -1,0 +1,151 @@
+[size=4][color=#00ffff]OVERVIEW[/color][/size]
+[size=3][b]Perfectly Valid Wards[/b] is an SKSE plugin that overhauls Skyrim's ward spells, making them behave like real magical shields.
+Wards now block melee attacks, arrows, shouts, diseases, and cloak effects. They can also reflect projectile spells back at attackers. The mod includes a ward power HUD meter, configurable attacker feedback, Restoration XP for blocking, and extensive tweaking options.[/size]
+
+[size=4][color=#00ffff]WHY ANOTHER WARD MOD?[/color][/size]
+[size=3]There have been other attempts to enhance ward spells, but most face key limitations:[/size]
+[list]
+[*][size=3][b]Consistency[/b]: Some mods only affect the player. [b]Perfectly Valid Wards[/b] applies to [b]both the player and NPCs[/b].[/size][/*]
+[*][size=3][b]Feedback[/b]: Hurt sounds or wrong impact effects still play. [b]Perfectly Valid Wards[/b] handles that.[/size][/*]
+[*][size=3][b]Compatibility[/b]: Doesn't directly touch vanilla records, highly compatible by design.[/size][/*]
+[/list]
+
+
+
+[size=4][color=#00ffff]FEATURES[/color][/size]
+
+[size=3][b][color=#88ccff]Physical Blocking[/color][/b][/size]
+[list]
+[*][size=3][b]Melee & Arrow Blocking[/b]: Wards completely stop melee swings and arrows within a configurable angle.[/size][/*]
+[*][size=3][b]Ward Power Cost[/b]: Physical damage drains Ward Power using a formula based on weapon damage and attacker skills.[/size][/*]
+[*][size=3][b]Attacker Feedback[/b]: Power attacks cause recoil; normal attacks can stagger the attacker (configurable).[/size][/*]
+[*][size=3][b]Restoration XP[/b]: Gain Restoration experience based on damage blocked (not Block or Armor XP).[/size][/*]
+[*][size=3][b]No Stamina Cost[/b]: Ward blocking doesn't cost stamina.[/size][/*]
+[/list]
+
+
+[size=3][b][color=#88ccff]Magic - Shouts[/color][/b][/size]
+[list]
+[*][size=3][b]Shout Modes[/b]: Four modes control how wards interact with shouts:[/size]
+[list]
+[*][size=3][b]Vanilla[/b]: Wards absorb shouts completely (default game behavior).[/size][/*]
+[*][size=3][b]Break Only[/b]: Shouts damage/break the ward but don't affect the defender.[/size][/*]
+[*][size=3][b]Break + Stagger[/b]: Ward breaks and defender staggers.[/size][/*]
+[*][size=3][b]Break + Pass Through[/b]: Ward breaks and the shout hits the defender.[/size][/*]
+[/list]
+[/*]
+[*][size=3][b]Configurable Damage[/b]: Choose between instant ward break or fixed damage.[/size][/*]
+[*][size=3][b]Player Immunity[/b]: Option to exempt the player from shout mechanics.[/size][/*]
+[*][size=3][b]Automatic Detection[/b]: Offensive shouts are identified automatically based on effects, damage keywords, and delivery type.[/size][/*]
+[*][size=3][b]Shout Exclusions[/b]: Exclude specific shouts from ward mechanics.[/size][/*]
+[/list]
+
+
+[size=3][b][color=#88ccff]Magic - Spell Reflection[/color][/b][/size]
+[list]
+[*][size=3][b]Reflect Projectile Spells[/b]: Incoming spell projectiles bounce back toward the attacker.[/size][/*]
+[*][size=3][b]Auto-Aim or Forward[/b]: Reflected spells can target the attacker or fire straight ahead.[/size][/*]
+[*][size=3][b]Blame Control[/b]: Choose whether the original attacker or defender is blamed for reflected damage.[/size][/*]
+[*][size=3][b]Reflect on Break[/b]: Option to reflect even the spell that breaks the ward.[/size][/*]
+[*][size=3][b]Automatic Detection[/b]: Reflectable spells are identified automatically.[/size][/*]
+[*][size=3][b]Spell Exclusions[/b]: Exclude specific spells from reflection.[/size][/*]
+[/list]
+
+
+[size=3][b][color=#88ccff]Magic - Effects[/color][/b][/size]
+[list]
+[*][size=3][b]Disease Blocking[/b]: Wards can block disease transmission when facing the source.[/size][/*]
+[*][size=3][b]Cloak Blocking[/b]: Wards can block hostile cloak spell damage ticks.[/size][/*]
+[*][size=3][b]Cloak Damage[/b]: Blocked cloak ticks can optionally drain ward power.[/size][/*]
+[/list]
+
+
+[size=3][b][color=#88ccff]Ward Tweaks[/color][/b][/size]
+[list]
+[*][size=3][b]Instant Charge[/b]: Wards charge to full power instantly.[/size][/*]
+[*][size=3][b]Charge Rate[/b]: Multiplier for ward charging speed.[/size][/*]
+[*][size=3][b]Magnitude[/b]: Multiplier for ward strength (max ward power).[/size][/*]
+[*][size=3][b]Cost[/b]: Multiplier for ward magicka cost.[/size][/*]
+[*][size=3][b]Player Team Only[/b]: Option to restrict tweaks to player and followers.[/size][/*]
+[/list]
+
+
+[size=3][b][color=#88ccff]HUD & Perk Gates[/color][/b][/size]
+[list]
+[*][size=3][b]Ward Meter[/b]: Displays current ward power on the HUD charge meter while casting.[/size][/*]
+[*][size=3][b]Perk Requirements[/b]: Each feature can require specific perks to unlock.[/size][/*]
+[*][size=3][b]Item Exclusions[/b]: Specific ward items (like Spellbreaker) can be configured to disable certain features.[/size][/*]
+[/list]
+
+
+
+[size=4][color=#00ffff]COMPATIBILITY[/color][/size]
+[list]
+[*][size=3]Works on all major game versions (SE/AE/VR)[/size][/*]
+[*][size=3]Should be compatible with everything.[/size][/*]
+[*][size=3]The esl flagged plugin adds a few new records, doesn't touch anything else.[/size][/*]
+[*][size=3]I will do my best to fix compatibility with combat mods but please be advised that I do not use complex combat mods.[/size][/*]
+[*][size=3]Tested with Deadly Combat - works fine.[/size][/*]
+[*][size=3]Tested with [url=https://www.nexusmods.com/skyrimspecialedition/mods/62061]Andrealletius' Additional Spells[/url] - really nice vanilla+ spell pack, try it out[/size][/*]
+[*][size=3]Should work with extra mod added ward spells - please report if you try.[/size][/*]
+[*][size=3]ScrambledBugs `accumulatingMagnitude` patch automatically detected and handled.[/size][/*]
+[/list]
+
+
+
+[size=4][color=#00ffff]CONFIGURATION[/color][/size]
+[size=3]You can edit the INI directly:[/size]
+
+[quote]Data\MCM\Settings\PerfectlyValidWards.ini[/quote]
+
+[size=3]Or use the optional MCM addon to change the common settings in-game.
+
+The MCM includes:[/size]
+[list]
+[*][size=3][b]General[/b] - Ward meter, perk gate options[/size][/*]
+[*][size=3][b]Tweaks[/b] - Charge speed, magnitude, cost multipliers[/size][/*]
+[*][size=3][b]Physical[/b] - Melee/arrow blocking, stagger, XP scaling[/size][/*]
+[*][size=3][b]Shouts[/b] - Shout mode, damage, pass-through behavior[/size][/*]
+[*][size=3][b]Effects[/b] - Disease and cloak blocking[/size][/*]
+[*][size=3][b]Reflection[/b] - Spell reflection options[/size][/*]
+[/list]
+
+[size=3]The INI also includes advanced options for perk requirements, extra disease/cloak spells, and exclusions. These settings require a game restart to take effect and should only be changed if you know what you are doing.[/size]
+
+
+
+
+[size=4][color=#00ffff]REQUIREMENTS[/color][/size]
+SE/AE
+[url=https://www.nexusmods.com/skyrimspecialedition/mods/32444]Address Library for SKSE Plugins[/url]
+
+VR
+[url=https://www.nexusmods.com/skyrimspecialedition/mods/58101]VR Address Library for SKSEVR[/url]
+
+Optional MCM addon
+[url=https://www.nexusmods.com/skyrimspecialedition/mods/53000]MCM Helper[/url]
+
+
+[size=4][color=#00ffff]SOURCE[/color][/size]
+[url=https://github.com/gabriel-andreescu/PerfectlyValidWards]github.com/gabriel-andreescu/PerfectlyValidWards[/url]
+
+
+[size=4][color=#00ffff]CREDITS[/color][/size]
+Thanks to the entire open source community, your documentation and tools made this possible.
+Special thanks to [url=https://github.com/doodlum]Doodlum[/url], who pointed me in the right direction when I started.
+
+The following projects and repositories were directly used or served as important references:
+[list]
+[*][url=https://github.com/alandtse/CommonLibVR/tree/ng]CommonLibSSE NG[/url][/*]
+[*][url=https://github.com/powerof3/CLibUtil]CLibUtil[/url][/*]
+[*][url=https://github.com/doodlum/skyrim-community-shaders]Skyrim Community Shaders[/url][/*]
+[*][url=https://github.com/ThirdEyeSqueegee/CLibNGPluginTemplate]CLibNGPluginTemplate[/url][/*]
+[*][url=https://github.com/powerof3]powerof3's repos[/url][/*]
+[*][url=https://github.com/Monitor221hz]Monitor221hz's repos[/url][/*]
+[*]ThirdEyeSqueegee's repos[/*]
+[*]The xRE SE Discord community[/*]
+[*][url=https://github.com/DennisSoemers/DeadlyCombat]Deadly Combat[/url] - for the stagger/recoil code[/*]
+[*][url=https://www.nexusmods.com/skyrimspecialedition/mods/18664]Wards Functionalities Extended[/url] - for it's scripts and the bounce arrow impact which I used as an example[/*]
+[*][url=https://www.nexusmods.com/skyrimspecialedition/mods/7102]No Combat Screams[/url] - which allowed me to identify the annoying grunts the actors make when they block[/*]
+[*][url=https://github.com/DavidJCobb/skyrim-classic-re]DavidJCobb's skyrim-classic-re[/url] - for TESMagicWardHitEvent struct[/*]
+[/list]
