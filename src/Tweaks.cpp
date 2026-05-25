@@ -24,6 +24,18 @@ namespace {
         }
     }
 
+    void ChargeWardInstantly(RE::AccumulatingValueModifierEffect* a_effect) {
+        constexpr float kInstantChargeDelta = 1.0e6f;
+
+        if (!a_effect || a_effect->actorValue != RE::ActorValue::kWardPower || a_effect->holdTimer > 0.0f) {
+            return;
+        }
+
+        if (a_effect->ShouldModifyOnUpdate()) {
+            a_effect->ModifyOnUpdate(kInstantChargeDelta);
+        }
+    }
+
     [[nodiscard]] bool ShouldModify(RE::AccumulatingValueModifierEffect* a_effect) {
         if (!a_effect) {
             return false;
@@ -116,10 +128,9 @@ struct AccumEffect_Update {
         }
 
         const auto* settings = Settings::GetSingleton();
-        const float trueMax = GetTrueMaximum(a_this);
 
         if (settings->instantWardCharge.load()) {
-            a_this->accumulatedMagnitude = trueMax;
+            ChargeWardInstantly(a_this);
             func(a_this, a_delta);
             return;
         }

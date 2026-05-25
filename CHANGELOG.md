@@ -3,6 +3,7 @@
 ## 2.1.0 - Unreleased
 
 - feat: add MCM support
+- fix: make Instant Ward Charge fully charge wards when enabled
 
 ## 2.0.4 - 2026-04-26
 

@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
   "name": "perfectly-valid-wards",
-  "version-string": "2.0.4",
+  "version-string": "2.1.0",
   "description": "Make wards valid again - SKSE plugin for Skyrim",
   "homepage": "https://github.com/gabriel-andreescu/PerfectlyValidWards",
   "license": "GPL-3.0-only",

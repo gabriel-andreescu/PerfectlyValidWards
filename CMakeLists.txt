@@ -8,7 +8,7 @@ set(VCPKG_INSTALL_OPTIONS "--no-print-usage")
 
 project(
         PerfectlyValidWards
-        VERSION 2.0.4
+        VERSION 2.1.0
         DESCRIPTION "Make wards valid again"
         LANGUAGES CXX
 )
