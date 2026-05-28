@@ -5,6 +5,20 @@ set(optional_stage "${WORK_DIR}/optional")
 
 include("${CMAKE_CURRENT_LIST_DIR}/copy_skyrim_assets.cmake")
 
+find_program(SEVEN_ZIP_EXECUTABLE NAMES 7z 7za 7zr)
+
+function(write_zip archive_path stage_dir entries)
+    execute_process(
+            COMMAND "${SEVEN_ZIP_EXECUTABLE}" a -tzip -mx=9 "${archive_path}" ${entries}
+            WORKING_DIRECTORY "${stage_dir}"
+            RESULT_VARIABLE zip_result
+    )
+
+    if (NOT zip_result EQUAL 0)
+        message(FATAL_ERROR "Failed to create ${archive_path}")
+    endif ()
+endfunction()
+
 file(MAKE_DIRECTORY "${OUTPUT_DIR}")
 file(REMOVE_RECURSE "${WORK_DIR}")
 file(REMOVE "${main_zip}" "${optional_zip}")
@@ -18,16 +32,7 @@ if (DEFINED ASSET_SOURCE_DIR)
 endif ()
 
 file(GLOB main_entries RELATIVE "${main_stage}" "${main_stage}/*")
-execute_process(
-        COMMAND "${CMAKE_COMMAND}" -E tar cf "${main_zip}" --format=zip ${main_entries}
-        WORKING_DIRECTORY "${main_stage}"
-        RESULT_VARIABLE main_zip_result
-)
-
-if (NOT main_zip_result EQUAL 0)
-    message(FATAL_ERROR "Failed to create ${main_zip}")
-endif ()
-
+write_zip("${main_zip}" "${main_stage}" "${main_entries}")
 message(STATUS "Created ${main_zip}")
 
 if (DEFINED ASSET_SOURCE_DIR AND EXISTS "${ASSET_SOURCE_DIR}/optional")
@@ -35,16 +40,7 @@ if (DEFINED ASSET_SOURCE_DIR AND EXISTS "${ASSET_SOURCE_DIR}/optional")
 
     if (optional_assets_copied)
         file(GLOB optional_entries RELATIVE "${optional_stage}" "${optional_stage}/*")
-        execute_process(
-                COMMAND "${CMAKE_COMMAND}" -E tar cf "${optional_zip}" --format=zip ${optional_entries}
-                WORKING_DIRECTORY "${optional_stage}"
-                RESULT_VARIABLE optional_zip_result
-        )
-
-        if (NOT optional_zip_result EQUAL 0)
-            message(FATAL_ERROR "Failed to create ${optional_zip}")
-        endif ()
-
+        write_zip("${optional_zip}" "${optional_stage}" "${optional_entries}")
         message(STATUS "Created ${optional_zip}")
     else ()
         message(STATUS "Skipping optional archive because ${ASSET_SOURCE_DIR}/optional is empty")

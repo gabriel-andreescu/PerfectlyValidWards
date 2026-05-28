@@ -199,7 +199,7 @@ add_custom_target(
         "-DASSET_SOURCE_DIR=${ASSET_SOURCE_DIR}"
         "-DOUTPUT_DIR=${DIST_OUTPUT_DIR}"
         "-DWORK_DIR=${CMAKE_CURRENT_BINARY_DIR}/dist/$<CONFIG>"
-        -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/package_skse_mod.cmake"
+        -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/package_mod.cmake"
         DEPENDS ${PROJECT_NAME}
         COMMENT "Creating ${PROJECT_NAME} distribution archives"
         VERBATIM
