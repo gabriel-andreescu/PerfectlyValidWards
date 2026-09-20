@@ -1,0 +1,146 @@
+[size=4][color=#00ffff]OVERVIEW[/color][/size]
+[b]Perfectly Valid Wards[/b] is an SKSE plugin that overhauls Skyrim's ward spells, making them behave like real magical shields.
+Wards now block melee attacks, arrows, shouts, diseases, and cloak effects. They can also reflect projectile spells back at attackers. The mod includes a ward power HUD meter, configurable attacker feedback, Restoration XP for blocking, and extensive tweaking options.
+
+
+[size=4][color=#00ffff]WHY ANOTHER WARD MOD?[/color][/size]
+There have been other attempts to enhance ward spells, but most face key limitations:
+[list]
+[*][b]Consistency[/b]: Some mods only affect the player. [b]Perfectly Valid Wards[/b] applies to [b]both the player and NPCs[/b].[/*]
+[*][b]Feedback[/b]: Hurt sounds or wrong impact effects still play. [b]Perfectly Valid Wards[/b] handles that.[/*]
+[*][b]Compatibility[/b]: Ward changes are applied at runtime without overriding ward records in a plugin, avoiding ESP-level conflicts with other mods that edit wards.[/*]
+[/list]
+
+
+[size=4][color=#00ffff]FEATURES[/color][/size]
+
+[b][color=#88ccff]Physical Blocking[/color][/b]
+[list]
+[*][b]Melee & Arrow Blocking[/b]: Separate toggles control melee attacks (including unarmed attacks and bashes) and arrows/crossbow bolts. Both are enabled by default and use a configurable blocking angle.[/*]
+[*][b]Ward Power Cost[/b]: Physical damage drains Ward Power using a formula based on weapon damage and attacker skills.[/*]
+[*][b]Attacker Feedback[/b]: Blocked power attacks can cause recoil. Blocked normal attacks can stagger the attacker. Both are configurable.[/*]
+[*][b]Restoration XP[/b]: Gain Restoration experience based on damage blocked (not Block or Armor XP).[/*]
+[*][b]No Stamina Cost[/b]: Ward blocking doesn't cost stamina.[/*]
+[/list]
+
+
+[b][color=#88ccff]Magic - Shouts[/color][/b]
+[list]
+[*][b]Shout Modes[/b]: Four modes control how wards interact with shouts:
+[list]
+[*][b]Vanilla[/b]: Wards absorb shouts completely (default game behavior).[/*]
+[*][b]Break Only[/b]: Shouts damage/break the ward but don't affect the defender.[/*]
+[*][b]Break + Stagger[/b]: Ward breaks and defender staggers.[/*]
+[*][b]Break + Pass Through[/b]: Ward breaks and the shout hits the defender.[/*]
+[/list]
+[/*]
+[*][b]Configurable Damage[/b]: Choose between instant ward break or fixed damage.[/*]
+[*][b]Player Immunity[/b]: Option to exempt the player from shout mechanics.[/*]
+[*][b]Automatic Detection[/b]: Offensive shouts are identified automatically based on effects, damage keywords, and delivery type.[/*]
+[*][b]Shout Exclusions[/b]: Exclude specific shouts from ward mechanics.[/*]
+[/list]
+
+
+[b][color=#88ccff]Magic - Spell Reflection[/color][/b]
+[list]
+[*][b]Reflect Projectile Spells[/b]: Incoming spell projectiles bounce back toward the attacker.[/*]
+[*][b]Auto-Aim or Forward[/b]: Reflected spells can target the attacker or fire straight ahead.[/*]
+[*][b]Blame Control[/b]: Choose whether the original attacker or defender is blamed for reflected damage.[/*]
+[*][b]Reflect on Break[/b]: Option to reflect even the spell that breaks the ward.[/*]
+[*][b]Automatic Detection[/b]: Reflectable spells are identified automatically.[/*]
+[*][b]Spell Exclusions[/b]: Exclude specific spells from reflection.[/*]
+[/list]
+
+
+[b][color=#88ccff]Magic - Effects[/color][/b]
+[list]
+[*][b]Disease Blocking[/b]: Wards can block disease transmission when facing the source.[/*]
+[*][b]Cloak Blocking[/b]: Wards can block hostile cloak spell damage ticks.[/*]
+[*][b]Cloak Damage[/b]: Blocked cloak ticks can optionally drain ward power.[/*]
+[/list]
+
+
+[b][color=#88ccff]Ward Tweaks[/color][/b]
+[list]
+[*][b]Instant Cast[/b]: Skip the casting delay before a ward activates. Enable this together with Instant Charge for quick blocking.[/*]
+[*][b]Instant Charge[/b]: Wards charge to full power instantly.[/*]
+[*][b]Charge Rate[/b]: Multiplier for ward charging speed.[/*]
+[*][b]Magnitude[/b]: Multiplier for ward strength (max ward power).[/*]
+[*][b]Cost[/b]: Multiplier for ward magicka cost.[/*]
+[*][b]Player Team Only[/b]: Option to restrict tweaks to player and followers.[/*]
+[/list]
+
+
+[b][color=#88ccff]HUD & Perk Gates[/color][/b]
+[list]
+[*][b]Ward Meter[/b]: Displays current ward power on the HUD charge meter while casting.[/*]
+[*][b]Perk Requirements[/b]: Each feature can require specific perks to unlock.[/*]
+[*][b]Item Exclusions[/b]: Specific ward items (like Spellbreaker) can be configured to disable certain features.[/*]
+[/list]
+
+
+[size=4][color=#00ffff]COMPATIBILITY[/color][/size]
+[list]
+[*]Works on all major game versions (SE/AE/VR)[/*]
+[*]Other mods that alter ward behavior or replace the same engine functions can conflict.[/*]
+[*]The plugin is ESL-flagged. It adds new records and edits the vanilla hit dialogue to suppress pain grunts when blocking with a ward.[/*]
+[*]I will do my best to fix compatibility with combat mods but please be advised that I do not use complex combat mods.[/*]
+[*]Tested with Deadly Combat - works fine.[/*]
+[*]Tested with [url=https://www.nexusmods.com/skyrimspecialedition/mods/62061]Andrealletius' Additional Spells[/url] - really nice vanilla+ spell pack, try it out[/*]
+[*]Should work with extra mod added ward spells - please report if you try.[/*]
+[*]The Scrambled Bugs [code]accumulatingMagnitude[/code] patch is detected and handled automatically.[/*]
+[/list]
+
+
+[size=4][color=#00ffff]CONFIGURATION[/color][/size]
+You can edit the INI directly:
+
+[quote]Data\MCM\Settings\PerfectlyValidWards.ini[/quote]
+
+Or use the optional MCM addon to change the common settings in-game.
+
+The MCM includes:
+[list]
+[*][b]General[/b] - Ward meter, perk gate options, debug logging[/*]
+[*][b]Tweaks[/b] - Charge speed, magnitude, cost multipliers[/*]
+[*][b]Physical[/b] - Melee/arrow blocking, stagger, XP scaling[/*]
+[*][b]Shouts[/b] - Shout mode, damage, pass-through behavior[/*]
+[*][b]Effects[/b] - Disease and cloak blocking[/*]
+[*][b]Reflection[/b] - Spell reflection options[/*]
+[/list]
+
+The INI also includes options for perk requirements, extra disease/cloak spells, and exclusions. Use local FormIDs without the load-order prefix, in [code]0x1234~Plugin.esp[/code] format, separated by commas. See [url=https://www.nexusmods.com/skyrimspecialedition/articles/6629]FormIDs and You[/url] for examples. Restart the game after changing these settings.
+
+
+[size=4][color=#00ffff]UPDATING TO 3.0.0[/color][/size]
+Your existing [code]Data\MCM\Settings\PerfectlyValidWards.ini[/code] is still used. [b]Before launching the game after updating[/b], convert any perk, spell or exclusion lists from [code]Plugin.esp|0x1234[/code] to [code]0x1234~Plugin.esp[/code]. Entries left in the old format will be removed. Other settings carry over.
+
+Alternatively, delete that INI to reset your settings. The mod generates a new one on the next launch.
+
+Settings from the old [code]Data\SKSE\Plugins\PerfectlyValidWards.ini[/code] are no longer imported.
+
+
+[size=4][color=#00ffff]REQUIREMENTS[/color][/size]
+SE/AE
+[url=https://www.nexusmods.com/skyrimspecialedition/mods/32444]Address Library for SKSE Plugins[/url]
+
+VR
+[url=https://www.nexusmods.com/skyrimspecialedition/mods/58101]VR Address Library for SKSEVR[/url]
+
+Optional MCM addon
+[url=https://www.nexusmods.com/skyrimspecialedition/mods/53000]MCM Helper[/url]
+
+
+[size=4][color=#00ffff]SOURCE[/color][/size]
+[url=https://github.com/gabriel-andreescu/PerfectlyValidWards]github.com/gabriel-andreescu/PerfectlyValidWards[/url]
+
+
+[size=4][color=#00ffff]CREDITS[/color][/size]
+[list]
+[*][url=https://github.com/alandtse/CommonLibSSE-NG]CommonLibSSE-NG[/url][/*]
+[*][url=https://github.com/powerof3/CLibUtil]CLibUtil[/url][/*]
+[*][url=https://github.com/alandtse/devbench]DevBench[/url][/*]
+[*][url=https://www.nexusmods.com/skyrimspecialedition/mods/53000]MCM Helper[/url] - for the MCM addon[/*]
+[*][url=https://github.com/DennisSoemers/DeadlyCombat]Deadly Combat[/url] - for the stagger and recoil code[/*]
+[*][url=https://github.com/DavidJCobb/skyrim-classic-re]DavidJCobb's skyrim-classic-re[/url] - for the TESMagicWardHitEvent definition[/*]
+[/list]
