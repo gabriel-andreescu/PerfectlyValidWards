@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "tboox.xmake-vscode",
+    "EditorConfig.EditorConfig",
+    "gabriel-andreescu.bbcode-editor",
+    "ms-python.python",
+    "charliermarsh.ruff",
+    "llvm-vs-code-extensions.vscode-clangd",
+    "ms-dotnettools.csharp",
+    "csharpier.csharpier-vscode"
+  ]
+}

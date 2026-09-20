@@ -1,0 +1,26 @@
+[project]
+name = "perfectly-valid-wards-tests"
+version = "3.0.0"
+requires-python = ">=3.11"
+
+[dependency-groups]
+dev = [
+    "bethesda-mod-kit[test] @ git+https://github.com/gabriel-andreescu/BethesdaModKit.git#subdirectory=python",
+    "ruff>=0.16.7",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests/game"]
+addopts = "-ra --strict-markers --import-mode=importlib"
+markers = [
+    "keyboard: requires keyboard casting bindings and sustained DevBench input",
+    "startup(name): requires a named configuration loaded at game startup",
+]
+devbench_url = "http://127.0.0.1:8920"
+
+[tool.ruff]
+target-version = "py311"
+extend-exclude = ["scratch"]
+
+[tool.ruff.lint]
+extend-select = ["I"]

@@ -1,0 +1,26 @@
+{
+  "steps": [
+    { "tool": "console", "args": { "command": "coc qasmoke" } },
+    { "waitUntil": "playerLoaded", "timeoutMs": 30000 },
+    { "waitUntil": "noBlockingMenu", "timeoutMs": 30000 },
+    { "wait": 3000 },
+    { "tool": "console", "args": { "command": "player.setav health 2000" } },
+    { "tool": "console", "args": { "command": "player.setav magicka 10000" } },
+    { "tool": "console", "args": { "command": "player.addspell 211f0" } },
+    {
+      "tool": "papyrus",
+      "args": {
+        "action": "call",
+        "script": "Actor",
+        "function": "InterruptCast",
+        "self": { "form": "0x14" }
+      }
+    },
+    {
+      "tool": "game",
+      "args": { "action": "save", "name": "PerfectlyValidWardsTest_QASmoke" }
+    },
+    { "waitFor": "saveGame", "timeoutMs": 15000 },
+    { "tool": "inspect", "args": { "kind": "scene" } }
+  ]
+}

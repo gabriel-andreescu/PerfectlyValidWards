@@ -1,14 +1,16 @@
-# Auto detect text files and perform LF normalization
 * text=auto eol=lf
 
-*.as linguist-language=ActionScript
-*.dll  binary
-*.lib  binary
-*.nif  binary
-*.dds  binary
-*.bsa  binary
-*.xwm  binary
-*.wav  binary
-*.esp  binary
-*.esm  binary
-*.pex  binary
+*.ba2 binary -eol
+*.bsa binary -eol
+*.dds binary -eol
+*.dll binary -eol
+*.esl binary -eol
+*.esm binary -eol
+*.esp binary -eol
+*.exe binary -eol
+*.hkx binary -eol
+*.nif binary -eol
+*.pdb binary -eol
+*.pex binary -eol
+*.png binary -eol
+*.swf binary -eol

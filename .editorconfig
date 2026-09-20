@@ -1,12 +1,23 @@
+root = true
+
 [*]
 end_of_line = lf
 charset = utf-8
 insert_final_newline = true
+trim_trailing_whitespace = true
 
-[*.{h,cmake,cpp}]
+[*.{c,h,cc,cpp,cxx,hpp,hxx,rc,cs,py,lua,psc,as,ps1,psd1,psm1}]
 indent_style = space
 indent_size = 4
 
-[*.{json,json.example}]
+[*.{json,jsonc,json.example,yaml,yml,xml,csproj,props,targets,slnx}]
 indent_style = space
 indent_size = 2
+
+[*.{md,md.jinja}]
+trim_trailing_whitespace = false
+
+[*.cs]
+csharp_style_namespace_declarations = file_scoped
+csharp_style_prefer_top_level_statements = false
+dotnet_diagnostic.IDE0055.severity = none
