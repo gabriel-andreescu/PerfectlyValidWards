@@ -4,6 +4,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix a crash when arrows or bolts hit wards with older versions of Cold Breath
+  NG installed
+- Include arrow and bolt damage in physical damage calculations for wards
+
 ## [3.0.0] - 2026-09-20
 
 ### Added

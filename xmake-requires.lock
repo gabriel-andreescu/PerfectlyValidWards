@@ -40,12 +40,12 @@
             },
             version = "4.3.4"
         },
-        ["commonlibsse-ng 8.0.1#f56260b5"] = {
+        ["commonlibsse-ng 9.0.0#f56260b5"] = {
             repo = {
-                commit = "50a603bc186e77575150943bdd3430b27d5cfb3b",
+                commit = "84cba5bd47f6dbfdbf4cea0771fedeb6923e52c5",
                 url = "https://github.com/gabriel-andreescu/BethesdaModKit.git"
             },
-            version = "8.0.1"
+            version = "9.0.0"
         },
         ["devbench-api 2026.09.13#f56260b5"] = {
             repo = {

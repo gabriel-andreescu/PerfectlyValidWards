@@ -11,7 +11,7 @@ includes("@addon/bmk/project")
 includes("@addon/bmk/native")
 
 -- Dependencies
-add_requires("commonlibsse-ng 8.0.1", { system = false })
+add_requires("commonlibsse-ng 9.0.0", { system = false })
 add_requires("clib-util 1.5.0", { system = false })
 add_requires("bmk", "devbench-api 2026.09.13", { system = false })
 add_requires("catch2 3.15.2", { system = false })
