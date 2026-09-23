@@ -14,7 +14,7 @@ jobs:
   build:
     permissions:
       contents: write
-    uses: gabriel-andreescu/BethesdaModKit/.github/workflows/build.yml@84cba5bd47f6dbfdbf4cea0771fedeb6923e52c5
+    uses: gabriel-andreescu/BethesdaModKit/.github/workflows/build.yml@47a7f48769c12dbd1eb35b0927727027f85ffc78
     with:
       run-tests: true
       publish-nexus: true
