@@ -209,7 +209,7 @@ wheels = [
 
 [[package]]
 name = "perfectly-valid-wards-tests"
-version = "3.0.0"
+version = "3.0.1"
 source = { virtual = "." }
 
 [package.dev-dependencies]
