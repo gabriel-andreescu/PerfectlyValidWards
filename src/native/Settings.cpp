@@ -37,82 +37,44 @@ void ApplyShoutMode(SettingsData& a_data) {
 }
 
 [[nodiscard]] bool LiveSettingsEqual(const Settings& a_settings, const SettingsData& a_data) {
-    return a_settings.showWardMeter.load()
-           == a_data.showWardMeter
-           && a_settings.perkGatesPlayerOnly.load()
-           == a_data.perkGatesPlayerOnly
-           && a_settings.debugLogging.load()
-           == a_data.debugLogging
-           && a_settings.instantWardCharge.load()
-           == a_data.instantWardCharge
-           && a_settings.instantWardCast.load()
-           == a_data.instantWardCast
-           && a_settings.wardChargeRateMultiplier.load()
-           == a_data.wardChargeRateMultiplier
-           && a_settings.wardMagnitudeMultiplier.load()
-           == a_data.wardMagnitudeMultiplier
-           && a_settings.wardCostMultiplier.load()
-           == a_data.wardCostMultiplier
-           && a_settings.restrictTweaksToPlayerTeam.load()
-           == a_data.restrictTweaksToPlayerTeam
-           && a_settings.blockMelee.load()
-           == a_data.blockMelee
-           && a_settings.blockArrows.load()
-           == a_data.blockArrows
-           && a_settings.staggerNormalAttacks.load()
-           == a_data.staggerNormalAttacks
-           && a_settings.staggerMagnitude.load()
-           == a_data.staggerMagnitude
-           && a_settings.staggerPowerAttacks.load()
-           == a_data.staggerPowerAttacks
-           && a_settings.blockingAngle.load()
-           == a_data.blockingAngle
-           && a_settings.powerDamageMultiplier.load()
-           == a_data.powerDamageMultiplier
-           && a_settings.blockXPScale.load()
-           == a_data.blockXPScale
-           && a_settings.shoutMode.load()
-           == a_data.shoutMode
-           && a_settings.staggerDefenderOnBreak.load()
-           == a_data.staggerDefenderOnBreak
-           && a_settings.staggerMagnitudeTowardDefender.load()
-           == a_data.staggerMagnitudeTowardDefender
-           && a_settings.shoutPassThrough.load()
-           == a_data.shoutPassThrough
-           && a_settings.playerImmuneToShoutMechanics.load()
-           == a_data.playerImmuneToShoutMechanics
-           && a_settings.shoutDamage.load()
-           == a_data.shoutDamage
-           && a_settings.shoutInstantBreak.load()
-           == a_data.shoutInstantBreak
-           && a_settings.blockDiseases.load()
-           == a_data.blockDiseases
-           && a_settings.blockCloaks.load()
-           == a_data.blockCloaks
-           && a_settings.cloakDamageMultiplier.load()
-           == a_data.cloakDamageMultiplier
-           && a_settings.enableSpellReflection.load()
-           == a_data.enableSpellReflection
-           && a_settings.autoAimReflection.load()
-           == a_data.autoAimReflection
-           && a_settings.reflectionBlameAttacker.load()
-           == a_data.reflectionBlameAttacker
-           && a_settings.reflectionForwardOffset.load()
-           == a_data.reflectionForwardOffset
-           && a_settings.reflectEvenIfWardBroken.load()
-           == a_data.reflectEvenIfWardBroken
-           && a_settings.restrictReflectionToPlayerTeam.load()
-           == a_data.restrictReflectionToPlayerTeam
-           && a_settings.excludedItemsDisablePhysicalBlocking.load()
-           == a_data.excludedItemsDisablePhysicalBlocking
-           && a_settings.excludedItemsDisableShoutMechanics.load()
-           == a_data.excludedItemsDisableShoutMechanics
-           && a_settings.excludedItemsDisableDiseaseBlocking.load()
-           == a_data.excludedItemsDisableDiseaseBlocking
-           && a_settings.excludedItemsDisableCloakBlocking.load()
-           == a_data.excludedItemsDisableCloakBlocking
-           && a_settings.excludedItemsDisableReflection.load()
-           == a_data.excludedItemsDisableReflection;
+    return a_settings.showWardMeter.load() == a_data.showWardMeter
+           && a_settings.perkGatesPlayerOnly.load() == a_data.perkGatesPlayerOnly
+           && a_settings.debugLogging.load() == a_data.debugLogging
+           && a_settings.instantWardCharge.load() == a_data.instantWardCharge
+           && a_settings.instantWardCast.load() == a_data.instantWardCast
+           && a_settings.wardChargeRateMultiplier.load() == a_data.wardChargeRateMultiplier
+           && a_settings.wardMagnitudeMultiplier.load() == a_data.wardMagnitudeMultiplier
+           && a_settings.wardCostMultiplier.load() == a_data.wardCostMultiplier
+           && a_settings.restrictTweaksToPlayerTeam.load() == a_data.restrictTweaksToPlayerTeam
+           && a_settings.blockMelee.load() == a_data.blockMelee
+           && a_settings.blockArrows.load() == a_data.blockArrows
+           && a_settings.staggerNormalAttacks.load() == a_data.staggerNormalAttacks
+           && a_settings.staggerMagnitude.load() == a_data.staggerMagnitude
+           && a_settings.staggerPowerAttacks.load() == a_data.staggerPowerAttacks
+           && a_settings.blockingAngle.load() == a_data.blockingAngle
+           && a_settings.powerDamageMultiplier.load() == a_data.powerDamageMultiplier
+           && a_settings.blockXPScale.load() == a_data.blockXPScale
+           && a_settings.shoutMode.load() == a_data.shoutMode
+           && a_settings.staggerDefenderOnBreak.load() == a_data.staggerDefenderOnBreak
+           && a_settings.staggerMagnitudeTowardDefender.load() == a_data.staggerMagnitudeTowardDefender
+           && a_settings.shoutPassThrough.load() == a_data.shoutPassThrough
+           && a_settings.playerImmuneToShoutMechanics.load() == a_data.playerImmuneToShoutMechanics
+           && a_settings.shoutDamage.load() == a_data.shoutDamage
+           && a_settings.shoutInstantBreak.load() == a_data.shoutInstantBreak
+           && a_settings.blockDiseases.load() == a_data.blockDiseases
+           && a_settings.blockCloaks.load() == a_data.blockCloaks
+           && a_settings.cloakDamageMultiplier.load() == a_data.cloakDamageMultiplier
+           && a_settings.enableSpellReflection.load() == a_data.enableSpellReflection
+           && a_settings.autoAimReflection.load() == a_data.autoAimReflection
+           && a_settings.reflectionBlameAttacker.load() == a_data.reflectionBlameAttacker
+           && a_settings.reflectionForwardOffset.load() == a_data.reflectionForwardOffset
+           && a_settings.reflectEvenIfWardBroken.load() == a_data.reflectEvenIfWardBroken
+           && a_settings.restrictReflectionToPlayerTeam.load() == a_data.restrictReflectionToPlayerTeam
+           && a_settings.excludedItemsDisablePhysicalBlocking.load() == a_data.excludedItemsDisablePhysicalBlocking
+           && a_settings.excludedItemsDisableShoutMechanics.load() == a_data.excludedItemsDisableShoutMechanics
+           && a_settings.excludedItemsDisableDiseaseBlocking.load() == a_data.excludedItemsDisableDiseaseBlocking
+           && a_settings.excludedItemsDisableCloakBlocking.load() == a_data.excludedItemsDisableCloakBlocking
+           && a_settings.excludedItemsDisableReflection.load() == a_data.excludedItemsDisableReflection;
 }
 
 void ApplyLiveSettings(Settings& a_settings, const SettingsData& a_data) {

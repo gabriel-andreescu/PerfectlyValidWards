@@ -17,10 +17,8 @@ namespace {
 constexpr auto kTrampolineSize = 128;
 
 void MessageHandler(SKSE::MessagingInterface::Message* a_message) { // NOLINT(misc-const-correctness)
-    if (a_message->type
-        == SKSE::MessagingInterface::kPreLoadGame
-        || a_message->type
-        == SKSE::MessagingInterface::kNewGame) {
+    if (a_message->type == SKSE::MessagingInterface::kPreLoadGame
+        || a_message->type == SKSE::MessagingInterface::kNewGame) {
         GameTasks::CancelPending();
         FormCache::GetSingleton()->ClearSpellCasters();
     }

@@ -31,7 +31,7 @@ public:
     [[nodiscard]] bool IsExcludedItemEquipped(const RE::Actor* a_actor) const;
 
     [[nodiscard]] RE::BGSKeyword* GetWardKeyword() const {
-        return wardKeyword_;
+        return _wardKeyword;
     }
 
     [[nodiscard]] RE::NiPointer<RE::TESObjectREFR> GetOrCreateSpellCaster(
@@ -51,22 +51,22 @@ private:
     using FormIDSet = std::unordered_set<RE::FormID>;
 
     // Built before hook installation and read-only afterward.
-    FormIDSet offensiveShoutSpells_;
-    FormIDSet shoutSpells_;
-    FormIDSet excludedShoutSpells_;
-    FormIDSet diseaseSpellIDs_;
-    FormIDSet cloakSpellIDs_;
-    FormIDSet reflectionExcludedSpells_;
-    std::vector<RE::TESBoundObject*> excludedItems_;
-    std::vector<RE::BGSPerk*> reflectionRequiredPerks_;
-    std::vector<RE::BGSPerk*> physicalRequiredPerks_;
-    std::vector<RE::BGSPerk*> shoutsRequiredPerks_;
-    std::vector<RE::BGSPerk*> diseaseRequiredPerks_;
-    std::vector<RE::BGSPerk*> cloakRequiredPerks_;
-    RE::BGSKeyword* wardKeyword_ {nullptr};
+    FormIDSet _offensiveShoutSpells;
+    FormIDSet _shoutSpells;
+    FormIDSet _excludedShoutSpells;
+    FormIDSet _diseaseSpellIDs;
+    FormIDSet _cloakSpellIDs;
+    FormIDSet _reflectionExcludedSpells;
+    std::vector<RE::TESBoundObject*> _excludedItems;
+    std::vector<RE::BGSPerk*> _reflectionRequiredPerks;
+    std::vector<RE::BGSPerk*> _physicalRequiredPerks;
+    std::vector<RE::BGSPerk*> _shoutsRequiredPerks;
+    std::vector<RE::BGSPerk*> _diseaseRequiredPerks;
+    std::vector<RE::BGSPerk*> _cloakRequiredPerks;
+    RE::BGSKeyword* _wardKeyword {nullptr};
 
-    std::unordered_map<RE::ActorHandle, RE::NiPointer<RE::TESObjectREFR>, HandleHash> spellCasters_;
-    std::mutex spellCastersMutex_;
+    std::unordered_map<RE::ActorHandle, RE::NiPointer<RE::TESObjectREFR>, HandleHash> _spellCasters;
+    std::mutex _spellCastersMutex;
 
     void BuildShoutCaches(RE::TESDataHandler& a_data, const Settings& a_settings);
     void BuildEffectCaches(RE::TESDataHandler& a_data, const Settings& a_settings);

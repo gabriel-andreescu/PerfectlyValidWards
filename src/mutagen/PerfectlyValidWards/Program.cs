@@ -11,7 +11,7 @@ internal static class Program
 {
     private static void Main(string[] args)
     {
-        var output = Path.GetFullPath(args[0]);
+        string output = Path.GetFullPath(args[0]);
         var mod = new SkyrimMod("PerfectlyValidWards.esp", SkyrimRelease.SkyrimSE);
         mod.ModHeader.Author = "DEFAULT";
         mod.ModHeader.Flags = SkyrimModHeader.HeaderFlag.Small;
@@ -39,7 +39,7 @@ internal static class Program
             new MasterReference { Master = ModKey.FromNameAndExtension("Skyrim.esm"), FileSize = 0 }
         );
 
-        var impact = mod.Impacts.AddNew("_GZ_WPNArrowVsWardImpact");
+        Impact impact = mod.Impacts.AddNew("_GZ_WPNArrowVsWardImpact");
         impact.AngleThreshold = 15;
         impact.Duration = 0.25F;
         impact.Orientation = Impact.OrientationType.SurfaceNormal;

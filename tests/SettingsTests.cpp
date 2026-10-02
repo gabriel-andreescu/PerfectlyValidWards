@@ -18,17 +18,17 @@ namespace {
 class ConfigurationDirectory {
 public:
     ConfigurationDirectory()
-        : root_(
+        : _root(
               std::filesystem::temp_directory_path()
               / ("pvw-settings-" + std::to_string(std::chrono::steady_clock::now().time_since_epoch().count()))
           ) {
-        if (!std::filesystem::create_directory(root_)) {
-            throw std::runtime_error("Could not create settings test directory: " + root_.string());
+        if (!std::filesystem::create_directory(_root)) {
+            throw std::runtime_error("Could not create settings test directory: " + _root.string());
         }
     }
     ~ConfigurationDirectory() {
         try {
-            std::filesystem::remove_all(root_);
+            std::filesystem::remove_all(_root);
         } catch (const std::exception& error) {
             std::fputs("Settings test cleanup failed: ", stderr);
             std::fputs(error.what(), stderr);
@@ -40,30 +40,33 @@ public:
     ConfigurationDirectory(ConfigurationDirectory&&) = delete;
     ConfigurationDirectory& operator=(ConfigurationDirectory&&) = delete;
 
-    void Defaults(std::string_view text) const {
-        Write(root_ / "MCM/Config/PerfectlyValidWards/settings.ini", text);
+    void Defaults(std::string_view a_text) const {
+        Write(_root / "MCM/Config/PerfectlyValidWards/settings.ini", a_text);
     }
-    void User(std::string_view text) const {
-        Write(root_ / "MCM/Settings/PerfectlyValidWards.ini", text);
+    void User(std::string_view a_text) const {
+        Write(_root / "MCM/Settings/PerfectlyValidWards.ini", a_text);
     }
-    [[nodiscard]] std::optional<SettingsData> Read(SettingsReadMode mode = SettingsReadMode::kAll) const {
-        return ReadSettings(root_, mode);
+    // REQUIRE fails the test on unreadable settings before the value is used.
+    [[nodiscard]] SettingsData Read(SettingsReadMode a_mode = SettingsReadMode::kAll) const {
+        const auto settings = ReadSettings(_root, a_mode);
+        REQUIRE(settings.has_value());
+        return settings.value_or(SettingsData {});
     }
     [[nodiscard]] std::string UserText() const {
-        std::ifstream file(root_ / "MCM/Settings/PerfectlyValidWards.ini");
+        std::ifstream file(_root / "MCM/Settings/PerfectlyValidWards.ini");
         return {std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()};
     }
 
 private:
-    static void Write(const std::filesystem::path& path, std::string_view text) {
-        std::filesystem::create_directories(path.parent_path());
-        std::ofstream file(path);
-        file << text;
+    static void Write(const std::filesystem::path& a_path, std::string_view a_text) {
+        std::filesystem::create_directories(a_path.parent_path());
+        std::ofstream file(a_path);
+        file << a_text;
         if (!file.good()) {
-            throw std::runtime_error("Could not write settings fixture: " + path.string());
+            throw std::runtime_error("Could not write settings fixture: " + a_path.string());
         }
     }
-    std::filesystem::path root_;
+    std::filesystem::path _root;
 };
 }
 
@@ -71,10 +74,9 @@ TEST_CASE("Invalid form entries do not remove valid configured forms") {
     const ConfigurationDirectory files;
     files.User("[Physical]\nsPhysicalRequiredPerks=Skyrim.esm, 0x456~Skyrim.esm\n");
     const auto settings = files.Read();
-    REQUIRE(settings);
-    REQUIRE(settings->physicalRequiredPerks.size() == 1);
-    CHECK(settings->physicalRequiredPerks.front().first == "Skyrim.esm");
-    CHECK(settings->physicalRequiredPerks.front().second == 0x456);
+    REQUIRE(settings.physicalRequiredPerks.size() == 1);
+    CHECK(settings.physicalRequiredPerks.front().first == "Skyrim.esm");
+    CHECK(settings.physicalRequiredPerks.front().second == 0x456);
 }
 
 TEST_CASE("Reload reads live values without rewriting the user file or importing startup lists") {
@@ -82,8 +84,7 @@ TEST_CASE("Reload reads live values without rewriting the user file or importing
     files.User("[Tweaks]\nfMagnitudeMultiplier=3\n[Physical]\nsPhysicalRequiredPerks=0x123~Skyrim.esm\n");
     const auto before = files.UserText();
     const auto data = files.Read(SettingsReadMode::kLiveOnly);
-    REQUIRE(data);
-    CHECK(data->wardMagnitudeMultiplier == 3);
-    CHECK(data->physicalRequiredPerks.empty());
+    CHECK(data.wardMagnitudeMultiplier == 3);
+    CHECK(data.physicalRequiredPerks.empty());
     CHECK(files.UserText() == before);
 }

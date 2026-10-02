@@ -291,33 +291,33 @@ void FormCache::Initialize(RE::TESDataHandler& a_data, const Settings& a_setting
     BuildExcludedItems(a_data, a_settings);
     BuildReflectionCaches(a_data, a_settings);
 
-    wardKeyword_ = a_data.LookupForm<RE::BGSKeyword>(0x1EA69, "Skyrim.esm");
-    if (wardKeyword_ == nullptr) {
+    _wardKeyword = a_data.LookupForm<RE::BGSKeyword>(0x1EA69, "Skyrim.esm");
+    if (_wardKeyword == nullptr) {
         SKSE::log::warn("FormCache: failed to resolve MagicWard keyword");
     }
 }
 
 void FormCache::BuildShoutCaches(RE::TESDataHandler& a_data, const Settings& a_settings) {
     const auto& shoutArray = a_data.GetFormArray<RE::TESShout>();
-    shoutSpells_ = CollectShoutSpells(shoutArray);
+    _shoutSpells = CollectShoutSpells(shoutArray);
 
-    SKSE::log::info("Shout Filter: indexed {} spell(s) from {} shout(s)", shoutSpells_.size(), shoutArray.size());
+    SKSE::log::info("Shout Filter: indexed {} spell(s) from {} shout(s)", _shoutSpells.size(), shoutArray.size());
 
     if (!a_settings.shoutExclusions.empty()) {
-        excludedShoutSpells_ = CollectExcludedShoutSpells(a_data, a_settings);
+        _excludedShoutSpells = CollectExcludedShoutSpells(a_data, a_settings);
         SKSE::log::info(
             "Shout Filter: excluded {} spell(s) from {} shout(s)",
-            excludedShoutSpells_.size(),
+            _excludedShoutSpells.size(),
             a_settings.shoutExclusions.size()
         );
     }
 
     auto [spellIDs, names] = CollectOffensiveShoutSpells(
         a_data.GetFormArray<RE::SpellItem>(),
-        shoutSpells_,
-        excludedShoutSpells_
+        _shoutSpells,
+        _excludedShoutSpells
     );
-    offensiveShoutSpells_ = std::move(spellIDs);
+    _offensiveShoutSpells = std::move(spellIDs);
 
     if (names.empty()) {
         SKSE::log::warn("Shout Filter: no offensive voice spells detected. Falling back to all voice spells.");
@@ -328,19 +328,19 @@ void FormCache::BuildShoutCaches(RE::TESDataHandler& a_data, const Settings& a_s
 }
 
 void FormCache::BuildEffectCaches(RE::TESDataHandler& a_data, const Settings& a_settings) {
-    diseaseSpellIDs_ = ResolveSpellList(a_data, a_settings.diseaseSpells, "Disease Filter");
-    cloakSpellIDs_ = ResolveSpellList(a_data, a_settings.cloakSpells, "Cloak Filter");
+    _diseaseSpellIDs = ResolveSpellList(a_data, a_settings.diseaseSpells, "Disease Filter");
+    _cloakSpellIDs = ResolveSpellList(a_data, a_settings.cloakSpells, "Cloak Filter");
 
     SKSE::log::info(
         "Effect Filters: {} disease spell(s), {} cloak spell(s) in whitelist",
-        diseaseSpellIDs_.size(),
-        cloakSpellIDs_.size()
+        _diseaseSpellIDs.size(),
+        _cloakSpellIDs.size()
     );
 }
 
 void FormCache::BuildExcludedItems(RE::TESDataHandler& a_data, const Settings& a_settings) {
-    excludedItems_.clear();
-    excludedItems_.reserve(a_settings.excludedItems.size());
+    _excludedItems.clear();
+    _excludedItems.reserve(a_settings.excludedItems.size());
 
     for (auto&& [plugin, formID] : a_settings.excludedItems) {
         auto* form = a_data.LookupForm(formID, plugin);
@@ -360,7 +360,7 @@ void FormCache::BuildExcludedItems(RE::TESDataHandler& a_data, const Settings& a
             continue;
         }
 
-        excludedItems_.push_back(obj);
+        _excludedItems.push_back(obj);
         SKSE::log::info(
             "Exclusions: resolved 0x{:06X}~{} -> {} <{:08X}>",
             formID,
@@ -372,26 +372,26 @@ void FormCache::BuildExcludedItems(RE::TESDataHandler& a_data, const Settings& a
 }
 
 bool FormCache::IsOffensiveShoutSpell(const RE::FormID a_id) const {
-    if (offensiveShoutSpells_.empty()) {
+    if (_offensiveShoutSpells.empty()) {
         return true;
     }
-    return offensiveShoutSpells_.contains(a_id);
+    return _offensiveShoutSpells.contains(a_id);
 }
 
 bool FormCache::IsShoutSpell(const RE::FormID a_id) const {
-    return shoutSpells_.contains(a_id);
+    return _shoutSpells.contains(a_id);
 }
 
 bool FormCache::IsExcludedShoutSpell(const RE::FormID a_id) const {
-    return excludedShoutSpells_.contains(a_id);
+    return _excludedShoutSpells.contains(a_id);
 }
 
 bool FormCache::IsDiseaseSpell(const RE::FormID a_id) const {
-    return diseaseSpellIDs_.contains(a_id);
+    return _diseaseSpellIDs.contains(a_id);
 }
 
 bool FormCache::IsCloakSpell(const RE::FormID a_id) const {
-    return cloakSpellIDs_.contains(a_id);
+    return _cloakSpellIDs.contains(a_id);
 }
 
 bool FormCache::IsExcludedItemEquipped(const RE::Actor* a_actor) const {
@@ -399,14 +399,14 @@ bool FormCache::IsExcludedItemEquipped(const RE::Actor* a_actor) const {
         return false;
     }
 
-    if (excludedItems_.empty()) {
+    if (_excludedItems.empty()) {
         return false;
     }
 
     auto* left = a_actor->GetEquippedObject(true);
     auto* right = a_actor->GetEquippedObject(false);
 
-    return std::ranges::contains(excludedItems_, left) || std::ranges::contains(excludedItems_, right);
+    return std::ranges::contains(_excludedItems, left) || std::ranges::contains(_excludedItems, right);
 }
 
 RE::NiPointer<RE::TESObjectREFR> FormCache::GetOrCreateSpellCaster(
@@ -419,11 +419,11 @@ RE::NiPointer<RE::TESObjectREFR> FormCache::GetOrCreateSpellCaster(
 
     const auto defenderHandle = a_defender->GetHandle();
 
-    std::unique_lock lock(spellCastersMutex_);
+    std::unique_lock lock(_spellCastersMutex);
 
     PruneSpellCastersLocked();
 
-    if (const auto found = spellCasters_.find(defenderHandle); found != spellCasters_.end()) {
+    if (const auto found = _spellCasters.find(defenderHandle); found != _spellCasters.end()) {
         if (found->second) {
             return found->second;
         }
@@ -440,7 +440,7 @@ RE::NiPointer<RE::TESObjectREFR> FormCache::GetOrCreateSpellCaster(
     casterRef->SetTemporary();
 
     lock.lock();
-    auto& entry = spellCasters_[defenderHandle];
+    auto& entry = _spellCasters[defenderHandle];
     if (!entry) {
         entry = placedCaster;
     } else {
@@ -453,14 +453,14 @@ RE::NiPointer<RE::TESObjectREFR> FormCache::GetOrCreateSpellCaster(
 void FormCache::PruneSpellCastersLocked() {
     // Active spells can still own these temporary casters. Release our references
     // and let the engine destroy them when the remaining owners finish.
-    for (auto it = spellCasters_.begin(); it != spellCasters_.end();) {
+    for (auto it = _spellCasters.begin(); it != _spellCasters.end();) {
         if (!it->first || !it->second) {
-            it = spellCasters_.erase(it);
+            it = _spellCasters.erase(it);
             continue;
         }
 
         if (const auto actorPtr = it->first.get(); !actorPtr) {
-            it = spellCasters_.erase(it);
+            it = _spellCasters.erase(it);
             continue;
         }
 
@@ -469,14 +469,14 @@ void FormCache::PruneSpellCastersLocked() {
 }
 
 void FormCache::ClearSpellCasters() {
-    std::unique_lock const lock(spellCastersMutex_);
-    spellCasters_.clear();
+    std::unique_lock const lock(_spellCastersMutex);
+    _spellCasters.clear();
 }
 
 void FormCache::BuildReflectionCaches(RE::TESDataHandler& a_data, const Settings& a_settings) {
     for (auto&& [plugin, formID] : a_settings.reflectionExclusions) {
         if (const auto* spell = a_data.LookupForm<RE::MagicItem>(formID, plugin)) {
-            reflectionExcludedSpells_.insert(spell->GetFormID());
+            _reflectionExcludedSpells.insert(spell->GetFormID());
             SKSE::log::info(
                 "Reflection Exclusions: resolved 0x{:06X}~{} -> {} <{:08X}>",
                 formID,
@@ -489,35 +489,35 @@ void FormCache::BuildReflectionCaches(RE::TESDataHandler& a_data, const Settings
         }
     }
 
-    reflectionRequiredPerks_ = ResolvePerkList(a_data, a_settings.reflectionRequiredPerks, "Reflection Perks");
-    physicalRequiredPerks_ = ResolvePerkList(a_data, a_settings.physicalRequiredPerks, "Physical Perks");
-    shoutsRequiredPerks_ = ResolvePerkList(a_data, a_settings.shoutsRequiredPerks, "Shout Perks");
-    diseaseRequiredPerks_ = ResolvePerkList(a_data, a_settings.diseaseRequiredPerks, "Disease Perks");
-    cloakRequiredPerks_ = ResolvePerkList(a_data, a_settings.cloakRequiredPerks, "Cloak Perks");
+    _reflectionRequiredPerks = ResolvePerkList(a_data, a_settings.reflectionRequiredPerks, "Reflection Perks");
+    _physicalRequiredPerks = ResolvePerkList(a_data, a_settings.physicalRequiredPerks, "Physical Perks");
+    _shoutsRequiredPerks = ResolvePerkList(a_data, a_settings.shoutsRequiredPerks, "Shout Perks");
+    _diseaseRequiredPerks = ResolvePerkList(a_data, a_settings.diseaseRequiredPerks, "Disease Perks");
+    _cloakRequiredPerks = ResolvePerkList(a_data, a_settings.cloakRequiredPerks, "Cloak Perks");
 }
 
 bool FormCache::IsReflectionExcluded(const RE::FormID a_id) const {
-    return reflectionExcludedSpells_.contains(a_id);
+    return _reflectionExcludedSpells.contains(a_id);
 }
 
 bool FormCache::HasReflectionPerks(const RE::Actor* a_actor) const {
-    return stl::HasAllRequiredPerks(a_actor, reflectionRequiredPerks_);
+    return stl::HasAllRequiredPerks(a_actor, _reflectionRequiredPerks);
 }
 
 bool FormCache::HasPhysicalPerks(const RE::Actor* a_actor) const {
-    return stl::HasAllRequiredPerks(a_actor, physicalRequiredPerks_);
+    return stl::HasAllRequiredPerks(a_actor, _physicalRequiredPerks);
 }
 
 bool FormCache::HasShoutPerks(const RE::Actor* a_actor) const {
-    return stl::HasAllRequiredPerks(a_actor, shoutsRequiredPerks_);
+    return stl::HasAllRequiredPerks(a_actor, _shoutsRequiredPerks);
 }
 
 bool FormCache::HasDiseasePerks(const RE::Actor* a_actor) const {
-    return stl::HasAllRequiredPerks(a_actor, diseaseRequiredPerks_);
+    return stl::HasAllRequiredPerks(a_actor, _diseaseRequiredPerks);
 }
 
 bool FormCache::HasCloakPerks(const RE::Actor* a_actor) const {
-    return stl::HasAllRequiredPerks(a_actor, cloakRequiredPerks_);
+    return stl::HasAllRequiredPerks(a_actor, _cloakRequiredPerks);
 }
 
 bool FormCache::IsReflectableSpell(RE::MagicItem* a_spell) const {
