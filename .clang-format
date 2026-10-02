@@ -33,7 +33,7 @@ AlignConsecutiveShortCaseStatements:
   AlignCaseColons: false
 AlignOperands: Align
 
-BreakBinaryOperations: OnePerLine
+BreakBinaryOperations: RespectPrecedence
 BreakBeforeBinaryOperators: All
 BreakBeforeTernaryOperators: true
 PenaltyBreakAssignment: 1000

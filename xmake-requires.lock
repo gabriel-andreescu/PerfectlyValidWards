@@ -5,37 +5,37 @@
     ["windows|x64"] = {
         ["bmk#f56260b5"] = {
             repo = {
-                commit = "50a603bc186e77575150943bdd3430b27d5cfb3b",
-                url = "https://github.com/gabriel-andreescu/BethesdaModKit.git"
+                commit = "d39bc83ee1282450a358a86fc64ad7eff5682110",
+                url = "https://github.com/gabriel-andreescu/BethesdaModKit"
             },
             version = "latest"
         },
         ["caprica#f56260b5"] = {
             repo = {
-                commit = "50a603bc186e77575150943bdd3430b27d5cfb3b",
-                url = "https://github.com/gabriel-andreescu/BethesdaModKit.git"
+                commit = "d39bc83ee1282450a358a86fc64ad7eff5682110",
+                url = "https://github.com/gabriel-andreescu/BethesdaModKit"
             },
             version = "2026.9.17"
         },
         ["catch2 3.15.2#f56260b5"] = {
             repo = {
                 branch = "master",
-                commit = "0c36ce5133b2d03d11c7402ba8bd187d2ad5b6e9",
+                commit = "745d74023a324ccd997857d4950d79ac28ca2981",
                 url = "https://github.com/xmake-io/xmake-repo.git"
             },
             version = "v3.15.2"
         },
         ["clib-util 1.5.0#f56260b5"] = {
             repo = {
-                commit = "50a603bc186e77575150943bdd3430b27d5cfb3b",
-                url = "https://github.com/gabriel-andreescu/BethesdaModKit.git"
+                commit = "d39bc83ee1282450a358a86fc64ad7eff5682110",
+                url = "https://github.com/gabriel-andreescu/BethesdaModKit"
             },
             version = "1.5.0"
         },
         ["cmake#f56260b5"] = {
             repo = {
                 branch = "master",
-                commit = "0c36ce5133b2d03d11c7402ba8bd187d2ad5b6e9",
+                commit = "745d74023a324ccd997857d4950d79ac28ca2981",
                 url = "https://github.com/xmake-io/xmake-repo.git"
             },
             version = "4.3.4"
@@ -49,15 +49,15 @@
         },
         ["devbench-api 2026.09.13#f56260b5"] = {
             repo = {
-                commit = "50a603bc186e77575150943bdd3430b27d5cfb3b",
-                url = "https://github.com/gabriel-andreescu/BethesdaModKit.git"
+                commit = "d39bc83ee1282450a358a86fc64ad7eff5682110",
+                url = "https://github.com/gabriel-andreescu/BethesdaModKit"
             },
             version = "2026.09.13"
         },
         ["directxmath 2024.02#f56260b5"] = {
             repo = {
                 branch = "master",
-                commit = "0c36ce5133b2d03d11c7402ba8bd187d2ad5b6e9",
+                commit = "745d74023a324ccd997857d4950d79ac28ca2981",
                 url = "https://github.com/xmake-io/xmake-repo.git"
             },
             version = "2024.02"
@@ -65,22 +65,22 @@
         ["directxtk 24.2.0#f56260b5"] = {
             repo = {
                 branch = "master",
-                commit = "0c36ce5133b2d03d11c7402ba8bd187d2ad5b6e9",
+                commit = "745d74023a324ccd997857d4950d79ac28ca2981",
                 url = "https://github.com/xmake-io/xmake-repo.git"
             },
             version = "24.2.0"
         },
         ["mcm-helper-sdk 1.6.3#f56260b5"] = {
             repo = {
-                commit = "50a603bc186e77575150943bdd3430b27d5cfb3b",
-                url = "https://github.com/gabriel-andreescu/BethesdaModKit.git"
+                commit = "d39bc83ee1282450a358a86fc64ad7eff5682110",
+                url = "https://github.com/gabriel-andreescu/BethesdaModKit"
             },
             version = "1.6.3"
         },
         ["ninja#f56260b5"] = {
             repo = {
                 branch = "master",
-                commit = "0c36ce5133b2d03d11c7402ba8bd187d2ad5b6e9",
+                commit = "745d74023a324ccd997857d4950d79ac28ca2981",
                 url = "https://github.com/xmake-io/xmake-repo.git"
             },
             version = "v1.13.2"
@@ -88,29 +88,29 @@
         ["rapidcsv v8.92#f56260b5"] = {
             repo = {
                 branch = "master",
-                commit = "0c36ce5133b2d03d11c7402ba8bd187d2ad5b6e9",
+                commit = "745d74023a324ccd997857d4950d79ac28ca2981",
                 url = "https://github.com/xmake-io/xmake-repo.git"
             },
             version = "v8.92"
         },
         ["skyrim-papyrus-sdk#26fb6840"] = {
             repo = {
-                commit = "50a603bc186e77575150943bdd3430b27d5cfb3b",
-                url = "https://github.com/gabriel-andreescu/BethesdaModKit.git"
+                commit = "d39bc83ee1282450a358a86fc64ad7eff5682110",
+                url = "https://github.com/gabriel-andreescu/BethesdaModKit"
             },
             version = "latest"
         },
         ["skyrim-papyrus-sources ec822650#f56260b5"] = {
             repo = {
-                commit = "50a603bc186e77575150943bdd3430b27d5cfb3b",
-                url = "https://github.com/gabriel-andreescu/BethesdaModKit.git"
+                commit = "d39bc83ee1282450a358a86fc64ad7eff5682110",
+                url = "https://github.com/gabriel-andreescu/BethesdaModKit"
             },
             version = "ec822650"
         },
         ["spdlog v1.16.0#09c8c173"] = {
             repo = {
                 branch = "master",
-                commit = "0c36ce5133b2d03d11c7402ba8bd187d2ad5b6e9",
+                commit = "745d74023a324ccd997857d4950d79ac28ca2981",
                 url = "https://github.com/xmake-io/xmake-repo.git"
             },
             version = "v1.16.0"
@@ -118,7 +118,7 @@
         ["xbyak v7.06#f56260b5"] = {
             repo = {
                 branch = "master",
-                commit = "0c36ce5133b2d03d11c7402ba8bd187d2ad5b6e9",
+                commit = "745d74023a324ccd997857d4950d79ac28ca2981",
                 url = "https://github.com/xmake-io/xmake-repo.git"
             },
             version = "v7.06"

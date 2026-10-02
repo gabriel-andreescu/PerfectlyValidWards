@@ -45,5 +45,5 @@ repos:
         name: clang-format
         language: python
         entry: clang-format -i
-        additional_dependencies: [clang-format==23.1.1]
+        additional_dependencies: [clang-format==23.1.0]
         types_or: [c, c++]

@@ -5,9 +5,10 @@ set_policy("package.requires_lock", true)
 
 local version = "3.0.1"
 
-add_repositories("bmk https://github.com/gabriel-andreescu/BethesdaModKit.git")
-add_addons("bmk 0.3.0")
-includes("@addon/bmk/project")
+add_repositories("bmk https://github.com/gabriel-andreescu/BethesdaModKit")
+add_repositories("xmake-luals https://github.com/gabriel-andreescu/xmake-luals.git")
+add_addons("bmk 0.5.0", "xmake-luals 0.1.1")
+includes("@addon/bmk/project", "@addon/xmake-luals/luals")
 includes("@addon/bmk/native")
 
 -- Dependencies

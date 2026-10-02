@@ -1,10 +1,9 @@
-_commit: v0.2.0
+_commit: v0.5.0
 _src_path: https://github.com/gabriel-andreescu/BethesdaModKit.git
 author: GabonZ
-bmk_repository: https://github.com/gabriel-andreescu/BethesdaModKit.git
 components:
-  - native
-  - plugin_generation
+- native
+- plugin_generation
 description: Make wards valid again
 devbench_api: true
 devbench_tests: true
@@ -17,3 +16,4 @@ pack_assets: false
 papyrus_source: src/papyrus
 pre_commit: true
 project_name: PerfectlyValidWards
+tooling_only: false

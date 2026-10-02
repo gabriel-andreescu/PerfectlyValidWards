@@ -2,4 +2,4 @@
 build/
 dist/
 scratch/
-**/*.jinja
+.copier-answers.yml

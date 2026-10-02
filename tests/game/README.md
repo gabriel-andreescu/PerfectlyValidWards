@@ -1,4 +1,4 @@
-# In-game tests
+# Game tests
 
 Pytest tests for ward casting, charging, magicka cost, physical and magical
 blocking, reflection, perk requirements, exclusions and HUD meter state through

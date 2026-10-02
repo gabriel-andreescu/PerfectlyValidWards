@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="BethesdaModKit.Mutagen" Version="0.2.0" />
+    <PackageReference Include="BethesdaModKit.Mutagen" Version="0.5.0" />
     <PackageReference Include="Mutagen.Bethesda.Skyrim" Version="0.54.4" />
   </ItemGroup>
 </Project>

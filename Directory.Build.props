@@ -2,6 +2,7 @@
   <PropertyGroup>
     <ArtifactsPath>$(MSBuildThisFileDirectory)build/intermediates/dotnet</ArtifactsPath>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 </Project>

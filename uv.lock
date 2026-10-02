@@ -4,8 +4,8 @@ requires-python = ">=3.11"
 
 [[package]]
 name = "bethesda-mod-kit"
-version = "0.2.0"
-source = { git = "https://github.com/gabriel-andreescu/BethesdaModKit.git?subdirectory=python#50a603bc186e77575150943bdd3430b27d5cfb3b" }
+version = "0.5.0"
+source = { git = "https://github.com/gabriel-andreescu/BethesdaModKit?subdirectory=python#d39bc83ee1282450a358a86fc64ad7eff5682110" }
 dependencies = [
     { name = "requests" },
 ]
@@ -222,7 +222,7 @@ dev = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "bethesda-mod-kit", extras = ["test"], git = "https://github.com/gabriel-andreescu/BethesdaModKit.git?subdirectory=python" },
+    { name = "bethesda-mod-kit", extras = ["test"], git = "https://github.com/gabriel-andreescu/BethesdaModKit?subdirectory=python" },
     { name = "ruff", specifier = ">=0.16.7" },
 ]
 

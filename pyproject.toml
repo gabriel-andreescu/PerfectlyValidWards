@@ -5,7 +5,7 @@ requires-python = ">=3.11"
 
 [dependency-groups]
 dev = [
-    "bethesda-mod-kit[test] @ git+https://github.com/gabriel-andreescu/BethesdaModKit.git#subdirectory=python",
+    "bethesda-mod-kit[test] @ git+https://github.com/gabriel-andreescu/BethesdaModKit#subdirectory=python",
     "ruff>=0.16.7",
 ]
 
