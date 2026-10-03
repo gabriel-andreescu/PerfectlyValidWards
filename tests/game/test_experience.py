@@ -1,6 +1,3 @@
-import time
-
-
 def test_armor_experience_after_ward_block(wards, attacker):
     wards.equip_attacker(attacker, "0x1397E")
     for item in ("0x12E49", "0x12E4D", "0x12E4B", "0x12E46"):
@@ -21,14 +18,15 @@ def test_armor_experience_after_ward_block(wards, attacker):
             wards.stop()
         wards.restore_health(attacker)
         armor_before, restoration_before = armor_xp(), wards.restoration_xp()
+        power = wards.state()["wardPower"]
         wards.animate(attacker, "attackStart")
-        time.sleep(1.5)
         if ward:
+            wards.wait_for_ward_damage(power)
             assert wards.health() >= 1999.9
             assert abs(armor_xp() - armor_before) < 0.001
             assert wards.restoration_xp() > restoration_before
         else:
-            assert wards.health() < 1999.9
+            wards.wait_for_health_damage()
             assert armor_xp() > armor_before, (
                 "A previous ward block suppressed normal armor XP"
             )
@@ -38,11 +36,14 @@ def test_ward_blocks_grant_only_restoration_experience(wards, attacker):
     wards.equip_attacker(attacker, "0x1397E")
     wards.settings(bInstantCharge=1)
     wards.cast()
+    # The attacker's combat AI swings at melee range before the ward is up.
+    wards.restore_health(attacker)
     info = wards.p("ActorValueInfo", "GetActorValueInfoByName", ["Block"])["formId"]
     before = wards.p("ActorValueInfo", "GetSkillExperience", self_form=info)
     restoration = wards.restoration_xp()
+    power = wards.state()["wardPower"]
     wards.animate(attacker, "attackStart")
-    time.sleep(1.5)
+    wards.wait_for_ward_damage(power)
     assert wards.health() >= 1999.9
     assert wards.restoration_xp() > restoration
     assert (

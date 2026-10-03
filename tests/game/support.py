@@ -86,6 +86,19 @@ class WardSession:
     def health(self, actor="0x14"):
         return self.p("Actor", "GetActorValue", ["Health"], actor)
 
+    def wait_for_ward_damage(self, power):
+        return self.wait(
+            lambda s: s["wardPower"] < power - 0.5, "The attack did not hit the ward"
+        )
+
+    def wait_for_health_damage(self, actor="0x14", below=1999.9):
+        return wait_for(
+            lambda: self.health(actor),
+            lambda health: health < below,
+            f"{actor} did not take health damage",
+            interval=0.05,
+        )
+
     def cast_npc_ward(self, actor, maximum=80):
         self.p("Actor", "SetActorValue", ["Magicka", 10000.0], actor)
         self.p("Actor", "SetActorValue", ["MagickaRateMult", 0.0], actor)

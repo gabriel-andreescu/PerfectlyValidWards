@@ -38,6 +38,7 @@ def test_physical_toggles(wards, attacker, attack, melee, arrows):
     )
     assert actual_distance < abs(distance) + 50
     xp_before = wards.restoration_xp()
+    power_before = wards.state()["wardPower"]
     if ammo:
         wards.p("Weapon", "Fire", [{"form": attacker}, {"form": ammo}], weapon)
         blocked = bool(arrows)
@@ -47,16 +48,17 @@ def test_physical_toggles(wards, attacker, attack, melee, arrows):
     else:
         wards.animate(attacker, "attackStart")
         blocked = bool(melee)
-    time.sleep(1.5)
-    health, power = wards.health(), wards.state()["wardPower"]
-    xp_after = wards.restoration_xp()
     if blocked:
+        power = wards.wait_for_ward_damage(power_before)["wardPower"]
+        health = wards.health()
         assert health >= 1999.9 and 0 < power < 799, (health, power)
         if attack != "Firebolt":
-            assert xp_after > xp_before
+            assert wards.restoration_xp() > xp_before
     else:
-        assert health < 1999.9 and abs(power - 800) < 0.1, (health, power)
-        assert abs(xp_after - xp_before) < 0.001
+        health = wards.wait_for_health_damage()
+        power = wards.state()["wardPower"]
+        assert abs(power - 800) < 0.1, (health, power)
+        assert abs(wards.restoration_xp() - xp_before) < 0.001
     wards.stop()
 
 
@@ -70,9 +72,7 @@ def melee_hit(wards, attacker, modifier):
     wards.restore_health(attacker)
     before = wards.state()["wardPower"]
     wards.animate(attacker, "attackStart")
-    hit = wards.wait(
-        lambda s: s["wardPower"] < before - 0.5, "The melee attack did not hit the ward"
-    )
+    hit = wards.wait_for_ward_damage(before)
     time.sleep(1.5)
     return before - hit["wardPower"]
 
@@ -92,8 +92,7 @@ def test_melee_damage_percentage_and_experience(wards, attacker):
     wards.stop()
     wards.restore_health(attacker)
     wards.animate(attacker, "attackStart")
-    time.sleep(1.5)
-    assert wards.health() < 1999.9
+    wards.wait_for_health_damage()
 
 
 def test_unarmed_ward_damage(wards, attacker):
