@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Stop a ward block from cancelling the Block or armor experience of the next
+  unblocked hit
+
 ## [3.0.1] - 2026-09-23
 
 ### Fixed

@@ -5,13 +5,10 @@
 #include "Physical.h"
 #include "SkyrimUtil.h"
 #include <RE/A/Actor.h>
-#include <RE/A/ActorValueList.h>
-#include <RE/A/ActorValues.h>
 #include <RE/H/HitData.h>
 #include <RE/M/MagicTarget.h>
 #include <REL/Relocation.h>
 #include <SKSE/SKSE.h>
-#include <cstdint>
 
 namespace Hooks {
 void Install() {
@@ -24,10 +21,6 @@ void Install() {
     );
 
     stl::WriteThunkCall<ActorGetBlockCost>(REL::Relocation {RELOCATION_ID(37633, 38586), REL::Relocate(0x8D4, 0xB39)});
-
-    // SSE: Up      p   PlayerCharacter__AdvanceSkill_1406A2540+25          call    sub_1406E61D0
-    // AE:  Up      p   PlayerCharacter__AddSkillExperience_140736E20+25    call    sub_7FF7F480AE60
-    stl::WriteThunkCall<AddSkillExperience>(REL::Relocation {RELOCATION_ID(39413, 40488), 0x25});
 
     // SSE: MagicTarget::AddTarget caller +0x1E8
     // AE:  MagicTarget::AddTarget caller +0x20B
@@ -53,24 +46,6 @@ float ActorGetBlockCost::thunk(RE::HitData& a_hitData) {
 float ActorCombatHit::thunk(RE::Actor* a_this, RE::HitData* a_hitData) {
     Physical::OnCombatHit(a_hitData);
     return func(a_this, a_hitData);
-}
-
-// The hook signature must match the engine call.
-// NOLINTNEXTLINE(readability-function-size)
-void AddSkillExperience::thunk(
-    float** a_skills,
-    RE::ActorValue a_av,
-    float a_xp,
-    std::uint64_t a_unk1,
-    std::uint32_t a_unk2,
-    bool a_applyMult,
-    bool a_silent
-) {
-    if (Physical::ShouldSuppressSkillXP(a_av)) {
-        SKSE::log::debug("Ignored XP from blocking | skill={} | xp={:.2f}", RE::ActorValueToString(a_av), a_xp);
-        return;
-    }
-    func(a_skills, a_av, a_xp, a_unk1, a_unk2, a_applyMult, a_silent);
 }
 
 bool MagicTargetAddTarget::thunk(RE::MagicTarget* a_this, RE::MagicTarget::AddTargetData* a_data) {

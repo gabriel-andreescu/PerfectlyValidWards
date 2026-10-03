@@ -12,14 +12,10 @@
 #include <RE/T/TESObjectWEAP.h>
 #include <SKSE/SKSE.h>
 #include <algorithm>
-#include <atomic>
 
 #include <optional>
 
 namespace {
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables) File-local state shared by the hit and XP hooks.
-std::atomic_bool recentWardBlock {false};
-
 [[nodiscard]] bool ShouldBlock(const RE::HitData& a_hitData) {
     const auto* settings = Settings::GetSingleton();
     const auto* weapon = a_hitData.weapon;
@@ -61,8 +57,6 @@ void GrantPlayerBlockXP(float a_wardDamage, const float a_xpScale) {
     if ((avOwner == nullptr) || a_wardDamage <= 0.F) {
         return;
     }
-
-    recentWardBlock = true;
 
     const float skill = avOwner->GetActorValue(RE::ActorValue::kRestoration);
     const float skillScale = std::clamp(1.F - (skill / 100.F), 0.1F, 1.F);
@@ -229,13 +223,4 @@ void Physical::OnCombatHit(RE::HitData* a_hitData) {
             stl::PlaySound(def, "MAGWardTestDeflect");
         }
     });
-}
-
-[[nodiscard]] bool Physical::ShouldSuppressSkillXP(const RE::ActorValue a_av) {
-    switch (a_av) {
-        case RE::ActorValue::kBlock:
-        case RE::ActorValue::kLightArmor:
-        case RE::ActorValue::kHeavyArmor: return recentWardBlock.exchange(false);
-        default:                          return false;
-    }
 }
