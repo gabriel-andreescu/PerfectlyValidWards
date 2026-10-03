@@ -3,7 +3,7 @@ set_project("PerfectlyValidWards")
 set_license("GPL-3.0")
 set_policy("package.requires_lock", true)
 
-local version = "3.0.1"
+local version = "3.0.2"
 
 add_repositories("bmk https://github.com/gabriel-andreescu/BethesdaModKit")
 add_repositories("xmake-luals https://github.com/gabriel-andreescu/xmake-luals.git")
@@ -114,7 +114,7 @@ target("PerfectlyValidWardsMCM", function()
             mod_id = "7318624425785",
             file_id = "7459724",
             category = "optional",
-            description = "MCM addon for Perfectly Valid Wards 3.0.1. Requires SkyUI and MCM Helper. Install after the main file and let it overwrite.",
+            description = "MCM addon for Perfectly Valid Wards 3.0.2. Requires SkyUI and MCM Helper. Install after the main file and let it overwrite.",
         },
     })
     add_installfiles("$(builddir)/artifacts/Mutagen/mcm/(PerfectlyValidWards.esp)")
